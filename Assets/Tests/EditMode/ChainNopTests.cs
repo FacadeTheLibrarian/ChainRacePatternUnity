@@ -25,8 +25,8 @@ namespace ChainPattern.Tests
         [Test]
         public void Start_CalledTwice_DoesNotThrow() {
             var chain = new ChainImmidiateComplete();
-            chain.StartIgnoreCallback();
-            Assert.DoesNotThrow(() => chain.StartIgnoreCallback());
+            chain.StartWithoutCallback();
+            Assert.DoesNotThrow(() => chain.StartWithoutCallback());
         }
 
         [Test]

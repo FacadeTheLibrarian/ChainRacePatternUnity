@@ -46,7 +46,7 @@ namespace ChainPattern {
         }
         public virtual void Dispose() { }
 
-        public UniTask StartIgnoreCallback() {
+        public UniTask StartWithoutCallback() {
             return Start(null);
         }
 

@@ -37,7 +37,7 @@ namespace ChainPattern.Tests
         [Test]
         public void Skip_AfterStart_DoesNotThrow() {
             var chain = new ChainFreeze();
-            chain.StartIgnoreCallback();
+            chain.StartWithoutCallback();
             Assert.DoesNotThrow(() => chain.Skip());
         }
     }

@@ -9,7 +9,7 @@ namespace ChainPattern.Tests
         public void Start_InvokesAction() {
             bool called = false;
             var chain = new ChainAction(() => called = true);
-            chain.StartIgnoreCallback();
+            chain.StartWithoutCallback();
             Assert.IsTrue(called);
         }
 
@@ -60,7 +60,7 @@ namespace ChainPattern.Tests
             bool secondCalled = false;
             var chain = new ChainAction(() => firstCalled = true);
             chain.SetAction(() => secondCalled = true);
-            chain.StartIgnoreCallback();
+            chain.StartWithoutCallback();
             Assert.IsFalse(firstCalled);
             Assert.IsTrue(secondCalled);
         }
