@@ -20,6 +20,10 @@ namespace ChainPattern {
         public void Reset() {
             hasAnyCalled = false;
         }
+        public void Release() {
+            onChainComplete = null;
+            onChainSkip = null;
+        }
         public void Complete(BaseChain chain) {
             if (hasAnyCalled) {
                 return;
