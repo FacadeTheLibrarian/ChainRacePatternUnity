@@ -8,7 +8,7 @@ namespace ChainPattern
     /// <summary>
     /// Chain class that completes immediately after starting (no operation)
     /// </summary>
-    public class ChainImmidiateConplete : BaseChain
+    public class ChainImmidiateComplete : BaseChain
     {
         /// <summary>
         /// Starts execution
