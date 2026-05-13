@@ -6,7 +6,7 @@ namespace ChainPattern
     /// <summary>
     /// Chain class that completes immediately after starting (no operation)
     /// </summary>
-    public class ChainNop : Chain
+    public class ChainNop : BaseChain
     {
         /// <summary>
         /// Starts execution

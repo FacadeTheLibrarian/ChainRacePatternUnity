@@ -8,7 +8,7 @@ namespace ChainPattern
     /// <summary>
     /// Chain that executes a single action/function
     /// </summary>
-    public class ChainAction : Chain
+    public class ChainAction : BaseChain
     {
         Action actionToCall;
 
@@ -22,14 +22,6 @@ namespace ChainPattern
         public ChainAction(Action action)
         {
             actionToCall = action;
-        }
-
-        /// <summary>
-        /// Creates a Chain that executes an action which takes isFastForward as a parameter
-        /// </summary>        
-        public ChainAction(Action<bool> action)
-        {
-            actionToCall = () => action?.Invoke(isFastForward);
         }
 
         /// <summary>
