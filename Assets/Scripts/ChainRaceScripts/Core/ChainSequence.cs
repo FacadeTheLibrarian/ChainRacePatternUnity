@@ -3,41 +3,41 @@
 
 using System.Collections.Generic;
 
-namespace ChainPattern
-{
+namespace ChainPattern {
     /// <summary>
     /// Chain that executes multiple chains sequentially
     /// </summary>
-    public class ChainSequence : Chain
-    {
-        List<Chain> chainList = new List<Chain>();
-        Chain currentChain;
-        bool isEnabled;
+    public class ChainSequence : BaseChain {
+        Queue<BaseChain> chainQueue = default;
+        BaseChain currentChain = default;
+        ChainContext downstreamContext = default;
 
 #if UNITY_EDITOR
         // Full list of all registered children, preserved in definition order for the debug view.
-        // Unlike chainList, entries are never removed from this list even after execution.
-        List<Chain> debugChainList = new List<Chain>();
+        // Unlike chainQueue, entries are never removed from this list even after execution.
+        List<BaseChain> debugChainList = new List<BaseChain>();
 #endif
 
-        public ChainSequence(params Chain[] chains)
-        {
-            isEnabled = true;
-            chainList.AddRange(chains);
+        public ChainSequence(params BaseChain[] chains) {
+            chainQueue = new Queue<BaseChain>();
+            downstreamContext = new ChainContext(_ => NextChain(), _ => NextChain());
 #if UNITY_EDITOR
             debugChainList.AddRange(chains);
 #endif
+            if (chains.Length > 0) {
+                foreach (BaseChain chain in chains) {
+                    chainQueue.Enqueue(chain);
+                }
+            }
         }
 
         /// <summary>
         /// Adds a chain to the sequence.
         /// Chains added after the sequence has finished are ignored.
         /// </summary>
-        public ChainSequence Add(Chain chain)
-        {
-            if (isEnabled)
-            {
-                chainList.Add(chain);
+        public ChainSequence Add(BaseChain chain) {
+            if (chainState == ChainState.Ready) {
+                chainQueue.Enqueue(chain);
 #if UNITY_EDITOR
                 debugChainList.Add(chain);
 #endif
@@ -48,57 +48,34 @@ namespace ChainPattern
         /// <summary>
         /// Starts execution
         /// </summary>
-        protected override void StartInternal()
-        {
+        protected override void StartInternal() {
             NextChain();
         }
 
         /// <summary>
         /// Called when skipped
         /// </summary>
-        protected override void SkipInternal()
-        {
-            if (currentChain != null)
-            {
+        protected override void SkipInternal() {
+            if (currentChain != null) {
                 currentChain.Skip();
-                currentChain = null;
             }
-            while (chainList.Count > 0)
-            {
-                Chain c = chainList[0];
-                chainList.RemoveAt(0);
-                bool complete = false;
-                c.SetCompleteCallback(() => complete = true);
-                c.SetIsFastForward(true);
-                c.Start();
-                if (!complete)
-                {
-                    c.Skip();
-                }
+            while (chainQueue.Count > 0) {
+                BaseChain c = chainQueue.Dequeue();
+                c.Skip();
             }
-            isEnabled = false;
         }
 
         /// <summary>
         /// Executes the next chain in the sequence
         /// </summary>
-        private void NextChain()
-        {
-            if (chainList.Count <= 0)
-            {
-                isEnabled = false;
+        private void NextChain() {
+            if (chainQueue.Count <= 0) {
                 Complete();
                 return;
             }
-            currentChain = chainList[0];
-            chainList.RemoveAt(0);
-            currentChain.SetIsFastForward(isFastForward);
-            currentChain.SetCompleteCallback(() =>
-            {
-                currentChain = null;
-                NextChain();
-            });
-            currentChain.Start();
+            currentChain = chainQueue.Dequeue();
+            downstreamContext.Reset();
+            currentChain.Start(downstreamContext);
         }
 
 #if UNITY_EDITOR
@@ -106,9 +83,7 @@ namespace ChainPattern
         /// Returns all registered children in definition order for the debug tree view.
         /// Includes chains regardless of their current state (Ready/Started/Completed/Skipped).
         /// </summary>
-        public override Chain[] DebugChildren => debugChainList.ToArray();
+        public override BaseChain[] DebugChildren => debugChainList.ToArray();
 #endif
     }
 }
-
-
