@@ -6,37 +6,35 @@ namespace ChainPattern.Tests
     public class ChainNopTests
     {
         [Test]
-        public void Start_CompletesImmediately()
-        {
+        public void Start_CompletesImmediately() {
             bool completed = false;
-            var chain = new ChainNop();
-            chain.SetCompleteCallback(() => completed = true);
-            chain.Start();
+            bool skipped = false;
+            var chain = new ChainImmidiateComplete();
+            var context = new ChainContext(_ => completed = true, _ => skipped = true);
+            chain.Start(context);
             Assert.IsTrue(completed);
+            Assert.IsFalse(skipped);
         }
 
         [Test]
-        public void Skip_BeforeStart_DoesNotThrow()
-        {
-            var chain = new ChainNop();
+        public void Skip_BeforeStart_DoesNotThrow() {
+            var chain = new ChainImmidiateComplete();
             Assert.DoesNotThrow(() => chain.Skip());
         }
 
         [Test]
-        public void Start_CalledTwice_DoesNotThrow()
-        {
-            var chain = new ChainNop();
-            chain.Start();
-            Assert.DoesNotThrow(() => chain.Start());
+        public void Start_CalledTwice_DoesNotThrow() {
+            var chain = new ChainImmidiateComplete();
+            chain.StartIgnoreCallback();
+            Assert.DoesNotThrow(() => chain.StartIgnoreCallback());
         }
 
         [Test]
-        public void CompleteCallback_CalledExactlyOnce()
-        {
+        public void CompleteCallback_CalledExactlyOnce() {
             int callCount = 0;
-            var chain = new ChainNop();
-            chain.SetCompleteCallback(() => callCount++);
-            chain.Start();
+            var chain = new ChainImmidiateComplete();
+            var context = new ChainContext(_ => callCount++, _ => { });
+            chain.Start(context);
             Assert.AreEqual(1, callCount);
         }
     }

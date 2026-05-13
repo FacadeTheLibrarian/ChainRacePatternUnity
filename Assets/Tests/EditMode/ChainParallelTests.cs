@@ -6,99 +6,104 @@ namespace ChainPattern.Tests
     public class ChainParallelTests
     {
         [Test]
-        public void EmptyParallel_CompletesImmediately()
-        {
+        public void EmptyParallel_CompletesImmediately() {
             bool completed = false;
+            bool skipped = false;
             var chain = new ChainParallel();
-            chain.SetCompleteCallback(() => completed = true);
-            chain.Start();
+            var context = new ChainContext(_ => completed = true, _ => skipped = true);
+            chain.Start(context);
             Assert.IsTrue(completed);
+            Assert.IsFalse(skipped);
         }
 
         [Test]
-        public void AllNops_CompletesImmediately()
-        {
+        public void AllNops_CompletesImmediately() {
             bool completed = false;
-            var chain = new ChainParallel(new ChainNop(), new ChainNop(), new ChainNop());
-            chain.SetCompleteCallback(() => completed = true);
-            chain.Start();
+            bool skipped = false;
+            var chain = new ChainParallel(new ChainImmidiateComplete(), new ChainImmidiateComplete(), new ChainImmidiateComplete());
+            var context = new ChainContext(_ => completed = true, _ => skipped = true);
+            chain.Start(context);
             Assert.IsTrue(completed);
+            Assert.IsFalse(skipped);
         }
 
         [Test]
-        public void WaitsForAllChains_NotCompletedUntilLastDone()
-        {
+        public void WaitsForAllChains_NotCompletedUntilLastDone() {
             bool completed = false;
+            bool skipped = false;
             var work = new ChainWork();
-            var chain = new ChainParallel(new ChainNop(), work);
-            chain.SetCompleteCallback(() => completed = true);
-            chain.Start();
+            var chain = new ChainParallel(new ChainImmidiateComplete(), work);
+            var context = new ChainContext(_ => completed = true, _ => skipped = true);
+            chain.Start(context);
             Assert.IsFalse(completed);
             work.End();
             Assert.IsTrue(completed);
+            Assert.IsFalse(skipped);
         }
 
         [Test]
-        public void CompletesOnlyWhenAllDone()
-        {
+        public void CompletesOnlyWhenAllDone() {
             bool completed = false;
+            bool skipped = false;
             var work1 = new ChainWork();
             var work2 = new ChainWork();
             var chain = new ChainParallel(work1, work2);
-            chain.SetCompleteCallback(() => completed = true);
-            chain.Start();
+            var context = new ChainContext(_ => completed = true, _ => skipped = true);
+            chain.Start(context);
             work1.End();
             Assert.IsFalse(completed);
             work2.End();
             Assert.IsTrue(completed);
+            Assert.IsFalse(skipped);
         }
 
         [Test]
-        public void Add_ReturnsChainParallelForFluent()
-        {
+        public void Add_ReturnsChainParallelForFluent() {
             var chain = new ChainParallel();
-            var result = chain.Add(new ChainNop());
+            var result = chain.Add(new ChainImmidiateComplete());
             Assert.AreSame(chain, result);
         }
 
         [Test]
-        public void Skip_AfterStart_SkipsAllRunningChains()
-        {
+        public void Skip_AfterStart_SkipsAllRunningChains() {
+            bool chainComplete = false;
+            bool chainSkipped = false;
             bool work1SkipCalled = false;
             bool work2SkipCalled = false;
-            var work1 = new ChainWork();
-            var work2 = new ChainWork();
-            work1.onSkip += () => work1SkipCalled = true;
-            work2.onSkip += () => work2SkipCalled = true;
-
+            var work1 = new ChainWork(new ChainWorkLifeCycleMock(onSkip: () => work1SkipCalled = true));
+            var work2 = new ChainWork(new ChainWorkLifeCycleMock(onSkip: () => work2SkipCalled = true));
             var chain = new ChainParallel(work1, work2);
-            chain.Start();
+            var context = new ChainContext(_ => chainComplete = true, _ => chainSkipped = true);
+            chain.Start(context);
             chain.Skip();
 
+            Assert.IsFalse(chainComplete);
+            Assert.IsTrue(chainSkipped);
             Assert.IsTrue(work1SkipCalled);
             Assert.IsTrue(work2SkipCalled);
         }
 
         [Test]
-        public void Skip_AfterStart_DoesNotInvokeCompleteCallback()
-        {
+        public void Skip_AfterStart_DoesNotInvokeCompleteCallback() {
             bool completed = false;
+            bool skipped = false;
             var chain = new ChainParallel(new ChainWork(), new ChainWork());
-            chain.SetCompleteCallback(() => completed = true);
-            chain.Start();
+            var context = new ChainContext(_ => completed = true, _ => skipped = true);
+            chain.Start(context);
             chain.Skip();
             Assert.IsFalse(completed);
+            Assert.IsTrue(skipped);
         }
 
-        [Test]
-        public void PropagatesFastForwardToChildren()
-        {
-            bool? childFastForward = null;
-            var child = new ChainAction((ff) => childFastForward = ff);
-            var chain = new ChainParallel(child);
-            chain.SetIsFastForward(true);
-            chain.Start();
-            Assert.AreEqual(true, childFastForward);
-        }
+        // Fastforward is deleted
+        //[Test]
+        //public void PropagatesFastForwardToChildren() {
+        //    bool? childFastForward = null;
+        //    var child = new ChainAction((ff) => childFastForward = ff);
+        //    var chain = new ChainParallel(child);
+        //    chain.SetIsFastForward(true);
+        //    chain.Start();
+        //    Assert.AreEqual(true, childFastForward);
+        //}
     }
 }
