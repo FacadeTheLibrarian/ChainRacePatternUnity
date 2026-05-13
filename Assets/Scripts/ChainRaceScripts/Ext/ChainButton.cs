@@ -8,7 +8,7 @@ namespace ChainPattern
     /// <summary>
     /// Chain that completes when a button is clicked
     /// </summary>
-    public class ChainButton : Chain
+    public class ChainButton : BaseChain
     {
         Button targetButton;
 
@@ -22,7 +22,7 @@ namespace ChainPattern
         /// </summary>
         protected override void StartInternal()
         {
-            if (isFastForward || targetButton == null)
+            if (targetButton == null)
             {
                 // Do nothing if it will be skipped immediately
                 Complete();

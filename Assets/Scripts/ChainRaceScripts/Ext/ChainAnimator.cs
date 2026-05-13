@@ -11,7 +11,7 @@ namespace ChainPattern
     /// <summary>
     /// Chain that waits for an Animator state to finish playing
     /// </summary>
-    public class ChainAnimator : Chain
+    public class ChainAnimator : BaseChain
     {
         Animator animator;
         string stateName;
@@ -35,14 +35,6 @@ namespace ChainPattern
         {
             if (animator == null)
             {
-                Complete();
-                return;
-            }
-            if (isFastForward)
-            {
-                // Jump to the last frame immediately
-                animator.Play(stateName, layer, 1f);
-                animator.Update(0f);
                 Complete();
                 return;
             }
