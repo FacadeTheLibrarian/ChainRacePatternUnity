@@ -38,6 +38,7 @@ namespace ChainPattern {
         // completedTime stays at -1 while the Chain is still running.
         float startedTime = -1f;
         float completedTime = -1f;
+        bool hasSkipped = false;
 #endif
 
         public BaseChain() {
@@ -82,6 +83,7 @@ namespace ChainPattern {
             chainState = ChainState.Skipped;
 #if UNITY_EDITOR
             completedTime = Time.realtimeSinceStartup;
+            hasSkipped = true;
 #endif
             SkipInternal();
             upstreamContext?.Skip(this);
@@ -123,8 +125,8 @@ namespace ChainPattern {
         /// <summary>The type name of this Chain instance.</summary>
         public string DebugTypeName => GetType().Name;
 
-        /// <summary>Whether this Chain was started with fast-forward enabled.</summary>
-        public bool DebugIsFastForward => false;
+        /// <summary>This Chain was skipped?</summary>
+        public bool HasSkipped => hasSkipped;
 
         /// <summary>The current state as a string: "Ready", "Started", "Skipped", or "Completed".</summary>
         public string DebugState => chainState.ToString();
