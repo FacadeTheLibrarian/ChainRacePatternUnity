@@ -56,6 +56,7 @@ namespace ChainPattern {
         /// Called when skipped
         /// </summary>
         protected override void SkipInternal() {
+            downstreamContext.Release();
             if (currentChain != null) {
                 currentChain.Skip();
             }

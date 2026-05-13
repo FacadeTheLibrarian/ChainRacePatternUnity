@@ -10,7 +10,7 @@ namespace ChainPattern {
     public class ChainParallel : BaseChain {
         Queue<BaseChain> chainQueue = default;
         List<BaseChain> dispatchedChainList = default;
-        ChainContext context = default;
+        ChainContext downstreamContext = default;
 
         enum ParallelState {
             Ready,
@@ -53,7 +53,7 @@ namespace ChainPattern {
             }
             else if (parallelState == ParallelState.Dispatched) {
                 dispatchedChainList.Add(chain);
-                chain.Start(context);
+                chain.Start(downstreamContext);
             }
             else {
                 // For all states except Started/Finished, queue into pending list
@@ -73,12 +73,12 @@ namespace ChainPattern {
                 Complete();
                 return;
             }
-            context = new ChainContext(OnChainComplete, OnChainComplete);
+            downstreamContext = new ChainContext(OnChainComplete, OnChainComplete);
             parallelState = ParallelState.Dispatching;
             while (chainQueue.Count > 0 && parallelState == ParallelState.Dispatching) {
                 BaseChain c = chainQueue.Dequeue();
                 dispatchedChainList.Add(c);
-                c.Start(context);
+                c.Start(downstreamContext);
             }
             if (parallelState == ParallelState.Dispatching) {
                 parallelState = ParallelState.Dispatched;
@@ -89,6 +89,7 @@ namespace ChainPattern {
         /// Called when skipped
         /// </summary>
         protected override void SkipInternal() {
+            downstreamContext.Release();
             parallelState = ParallelState.Skipping;
             ConsumeStartedAndPendingChains();
             parallelState = ParallelState.Finished;
@@ -105,7 +106,7 @@ namespace ChainPattern {
                     Complete();
                     return;
                 }
-                context.Reset();
+                downstreamContext.Reset();
             }
         }
 
@@ -113,7 +114,7 @@ namespace ChainPattern {
         /// Consumes (completes or skips) all started and pending chains
         /// </summary>
         private void ConsumeStartedAndPendingChains() {
-            context.Release();
+            downstreamContext.Release();
             while (dispatchedChainList.Count > 0) {
                 BaseChain c = dispatchedChainList[0];
                 dispatchedChainList.RemoveAt(0);
