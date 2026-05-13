@@ -5,47 +5,27 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
 
-namespace ChainPattern
-{
+namespace ChainPattern {
+    //NOTE: せっかくChainParallelが存在するのにevent Actionでマルチキャストデリゲートするか？と思ったのでフックを外注製に
     /// <summary>
     /// Chain with onStart, onSkip, onUpdate events
     /// </summary>
-    public class ChainWork : Chain
-    {
-        /// <summary>
-        /// Event invoked when execution starts
-        /// </summary>
-        public event Action onStart;
-        /// <summary>
-        /// Event invoked when skipped
-        /// </summary>
-        public event Action onSkip;
-        /// <summary>
-        /// Event invoked every frame after ChainWork starts
-        /// </summary>
-        public event Action onUpdate;
+    public class ChainWork : BaseChain {
+        private IChainWorkLifeCycle _lifeCycle = default;
+        private CancellationTokenSource _tokenSource = default;
+        private bool _isDispatched = false;
 
-        CancellationTokenSource cts;
-        bool isStarted;
-
-        public ChainWork()
-        {
+        public ChainWork(IChainWorkLifeCycle lifeCycle = null) {
+            _lifeCycle = lifeCycle;
         }
-
-        /// <summary>
-        /// Indicates whether the work will be skipped
-        /// </summary>
-        public bool isWorkFastForward => isFastForward;
 
         /// <summary>
         /// Ends the work execution
         /// </summary>
-        public void End()
-        {
-            if (isStarted)
-            {
-                cts?.Cancel();
-                isStarted = false;
+        public void End() {
+            if (_isDispatched) {
+                _tokenSource?.Cancel();
+                _isDispatched = false;
                 Complete();
             }
         }
@@ -53,46 +33,39 @@ namespace ChainPattern
         /// <summary>
         /// Starts execution
         /// </summary>
-        protected override void StartInternal()
-        {
-            isStarted = true;
-            cts = new CancellationTokenSource();
-            onStart?.Invoke();
-            FrameLoopAsync(cts.Token).Forget();
+        protected override void StartInternal() {
+            _isDispatched = true;
+            _tokenSource = new CancellationTokenSource();
+            _lifeCycle?.BeforeStart();
+            FrameLoopAsync(_tokenSource.Token).Forget();
         }
 
         /// <summary>
         /// Called when skipped
         /// </summary>
-        protected override void SkipInternal()
-        {
-            isStarted = false;
-            cts?.Cancel();
-            onSkip?.Invoke();
+        protected override void SkipInternal() {
+            _isDispatched = false;
+            _tokenSource?.Cancel();
+            _lifeCycle?.AfterSkip();
         }
 
         /// <summary>
         /// Execute FrameLoop
         /// </summary>
-        private async UniTask FrameLoopAsync(CancellationToken token)
-        {
-            try
-            {
-                while (!token.IsCancellationRequested)
-                {
+        private async UniTask FrameLoopAsync(CancellationToken token) {
+            try {
+                while (!token.IsCancellationRequested) {
+                    _lifeCycle?.Update();
                     await UniTask.Yield(PlayerLoopTiming.Update, token);
-                    onUpdate?.Invoke();
                 }
             }
-            catch (OperationCanceledException)
-            {
+            catch (OperationCanceledException) {
                 // Executed when canceled                
             }
-            finally
-            {
+            finally {
                 // Dispose of resources after completion or cancellation
-                cts?.Dispose();
-                cts = null;
+                _tokenSource?.Dispose();
+                _tokenSource = null;
             }
         }
     }
