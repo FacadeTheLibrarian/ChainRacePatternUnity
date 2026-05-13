@@ -14,12 +14,12 @@ namespace ChainPattern.Editor
     /// </summary>
     public class ChainDebugWindow : EditorWindow
     {
-        static Chain watchedChain;
+        static BaseChain watchedChain;
         Vector2 scrollPos;
         bool showCompleted = true;
 
-        Chain lastWatchedChain;
-        readonly Dictionary<Chain, double> completionTimes = new();
+        BaseChain lastWatchedChain;
+        readonly Dictionary<BaseChain, double> completionTimes = new();
 
         static readonly Color ColorReady     = new Color(0.6f, 0.6f, 0.6f);
         static readonly Color ColorStarted   = new Color(0.4f, 1.0f, 0.4f);
@@ -36,7 +36,7 @@ namespace ChainPattern.Editor
         /// Registers a Chain to observe. Call this from game code during Play Mode.
         /// Typically called each time a new root Chain is started (e.g., at the top of ChainStart()).
         /// </summary>
-        public static void Watch(Chain chain)
+        public static void Watch(BaseChain chain)
         {
             watchedChain = chain;
         }
@@ -116,13 +116,13 @@ namespace ChainPattern.Editor
             GUI.color = prev;
         }
 
-        void CountChains(Chain chain, out int ready, out int started, out int skipped, out int completed)
+        void CountChains(BaseChain chain, out int ready, out int started, out int skipped, out int completed)
         {
             ready = started = skipped = completed = 0;
             CountChainsRecursive(chain, ref ready, ref started, ref skipped, ref completed);
         }
 
-        void CountChainsRecursive(Chain chain, ref int ready, ref int started, ref int skipped, ref int completed)
+        void CountChainsRecursive(BaseChain chain, ref int ready, ref int started, ref int skipped, ref int completed)
         {
             switch (chain.DebugState)
             {
@@ -142,7 +142,7 @@ namespace ChainPattern.Editor
 
         static string ColorHex(Color c) => $"#{(int)(c.r*255):X2}{(int)(c.g*255):X2}{(int)(c.b*255):X2}";
 
-        void DrawChain(Chain chain, int depth)
+        void DrawChain(BaseChain chain, int depth)
         {
             string state = chain.DebugState;
 
@@ -166,12 +166,12 @@ namespace ChainPattern.Editor
 
             float elapsed = chain.DebugElapsedSeconds;
             string elapsedStr = elapsed >= 0f ? $"  {elapsed:F1}s" : "";
-            string ffStr = chain.DebugIsFastForward ? "  <color=#FF88FF>[FF]</color>" : "";
+            string skippedStr = chain.HasSkipped ? "  <color=#FF88FF>[FF]</color>" : "";
             string hex = ColorHex(stateColor);
 
             EditorGUI.indentLevel = depth;
             EditorGUILayout.LabelField(
-                $"<color={hex}>{chain.DebugTypeName}  [{state}]{elapsedStr}</color>{ffStr}",
+                $"<color={hex}>{chain.DebugTypeName}  [{state}]{elapsedStr}</color>{skippedStr}",
                 RichLabelStyle);
 
             foreach (var child in chain.DebugChildren)
