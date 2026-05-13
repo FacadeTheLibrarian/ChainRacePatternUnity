@@ -10,17 +10,21 @@ namespace ChainPattern
     /// <summary>
     /// Chain that waits for a specified duration
     /// </summary>
-    public class ChainDelay : Chain
+    public class ChainDelay : BaseChain
     {
-        float delaySeconds;
-        CancellationTokenSource cts;
+        private readonly float DELAY_SECONDS = 0.0f;
+        private CancellationTokenSource _tokenSource = default;
 
         /// <summary>
         /// Creates a delay chain with duration in seconds
         /// </summary>
         public ChainDelay(float seconds)
         {
-            delaySeconds = seconds;
+            DELAY_SECONDS = seconds;
+        }
+
+        public override void Dispose() {
+            
         }
 
         /// <summary>
@@ -28,14 +32,8 @@ namespace ChainPattern
         /// </summary>
         protected override void StartInternal()
         {
-            if (isFastForward)
-            {
-                // Do nothing if it will be skipped immediately
-                Complete();
-                return;
-            }
-            cts = new CancellationTokenSource();
-            DelayAsync(cts.Token).Forget();
+            _tokenSource = new CancellationTokenSource();
+            DelayAsync(_tokenSource.Token).Forget();
         }
 
         /// <summary>
@@ -43,9 +41,9 @@ namespace ChainPattern
         /// </summary>
         protected override void SkipInternal()
         {
-            if (cts != null && !cts.IsCancellationRequested)
+            if (_tokenSource != null && !_tokenSource.IsCancellationRequested)
             {
-                cts.Cancel();
+                _tokenSource.Cancel();
             }
         }
 
@@ -56,7 +54,7 @@ namespace ChainPattern
         {
             try
             {
-                await UniTask.Delay((int)(delaySeconds * 1000), cancellationToken: token);
+                await UniTask.Delay((int)(DELAY_SECONDS * 1000), cancellationToken: token);
                 Complete();
             }
             catch (OperationCanceledException)
@@ -66,8 +64,8 @@ namespace ChainPattern
             finally
             {
                 // Dispose of resources after completion or cancellation
-                cts?.Dispose();
-                cts = null;
+                _tokenSource?.Dispose();
+                _tokenSource = null;
             }
         }
     }
