@@ -34,6 +34,7 @@ namespace ChainPattern {
             foreach (BaseChain chain in chains) {
                 chainQueue.Enqueue(chain);
             }
+            downstreamContext = new ChainContext(OnChainComplete, OnChainComplete);
 #if UNITY_EDITOR
             debugChainList.AddRange(chains);
 #endif
@@ -73,7 +74,6 @@ namespace ChainPattern {
                 Complete();
                 return;
             }
-            downstreamContext = new ChainContext(OnChainComplete, OnChainComplete);
             parallelState = ParallelState.Dispatching;
             while (chainQueue.Count > 0 && parallelState == ParallelState.Dispatching) {
                 BaseChain c = chainQueue.Dequeue();
@@ -96,6 +96,21 @@ namespace ChainPattern {
         }
 
         /// <summary>
+        /// Consumes (completes or skips) all started and pending chains
+        /// </summary>
+        private void ConsumeStartedAndPendingChains() {
+            while (dispatchedChainList.Count > 0) {
+                BaseChain c = dispatchedChainList[0];
+                dispatchedChainList.RemoveAt(0);
+                c.Skip();
+            }
+            while (chainQueue.Count > 0) {
+                BaseChain c = chainQueue.Dequeue();
+                c.Skip();
+            }
+        }
+
+        /// <summary>
         /// Callback invoked when a chain completes
         /// </summary>        
         private void OnChainComplete(BaseChain chain) {
@@ -109,24 +124,6 @@ namespace ChainPattern {
                 downstreamContext.Reset();
             }
         }
-
-        /// <summary>
-        /// Consumes (completes or skips) all started and pending chains
-        /// </summary>
-        private void ConsumeStartedAndPendingChains() {
-            downstreamContext.Release();
-            while (dispatchedChainList.Count > 0) {
-                BaseChain c = dispatchedChainList[0];
-                dispatchedChainList.RemoveAt(0);
-                c.Skip();
-            }
-            while (chainQueue.Count > 0) {
-                BaseChain c = chainQueue.Dequeue();
-                c.Skip();
-
-            }
-        }
-
 #if UNITY_EDITOR
         /// <summary>
         /// Returns all registered children in definition order for the debug tree view.

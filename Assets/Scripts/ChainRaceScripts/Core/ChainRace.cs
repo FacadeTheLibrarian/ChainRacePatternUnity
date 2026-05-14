@@ -30,6 +30,7 @@ namespace ChainPattern {
         public ChainRace(params BaseChain[] chains) {
             raceState = RaceState.Ready;
             chainQueue = new Queue<BaseChain>(chains);
+            downstreamContext = new ChainContext(OnChainComplete, OnChainComplete);
 #if UNITY_EDITOR
             debugChainList.AddRange(chains);
 #endif
@@ -71,8 +72,6 @@ namespace ChainPattern {
             }
 
             raceState = RaceState.Dispatching;
-            downstreamContext = new ChainContext(OnChainComplete, OnChainComplete);
-
             // If chain starts and immidiately completes in a single frame, raceState should be skipping and then finished
             // so the condition never meets, and while breaks
             while (chainQueue.Count > 0 && raceState == RaceState.Dispatching) {

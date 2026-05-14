@@ -42,11 +42,16 @@ namespace ChainPattern
             Complete();
         }
 
+        // NOTE: 元スクリプトの Start() -> if(!complete) Skip() だと、Start でも Skip でも actionToCall を呼びたい
+        // 違うのはCompleteするかどうかなので結局同じだと思われる
+        // In the original script, Start() -> if(!complete) Skip() is called, and we want to call actionToCall in both Start and Skip.
+        // The only difference is whether to call Complete or not, so it seems to be the same.
         /// <summary>
         /// Called when skipped
         /// </summary>
         protected override void SkipInternal()
         {
+            actionToCall?.Invoke();
             actionToCall = null;
         }
     }
