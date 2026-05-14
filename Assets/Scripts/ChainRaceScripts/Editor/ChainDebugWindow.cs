@@ -25,6 +25,7 @@ namespace ChainPattern.Editor
         static readonly Color ColorDispatched   = new Color(0.4f, 1.0f, 0.4f);
         static readonly Color ColorSkipped   = new Color(1.0f, 0.85f, 0.2f);
         static readonly Color ColorCompleted = new Color(0.5f, 0.8f, 1.0f);
+        static readonly Color ColorCancelled = new Color(1.0f, 0.45f, 0.45f);
 
         [MenuItem("Window/Chain Debug")]
         public static void ShowWindow()
@@ -77,7 +78,7 @@ namespace ChainPattern.Editor
 
             showCompleted = EditorGUILayout.ToggleLeft("Show Completed", showCompleted);
 
-            CountChains(watchedChain, out int ready, out int dispatched, out int skipped, out int completed);
+            CountChains(watchedChain, out int ready, out int dispatched, out int skipped, out int completed, out int cancelled);
             int total = ready + dispatched + skipped + completed;
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label($"Total: {total}", GUILayout.ExpandWidth(false));
@@ -88,6 +89,7 @@ namespace ChainPattern.Editor
             DrawColorLabel($"Dispatched: {dispatched}",     ColorDispatched);
             DrawColorLabel($"Skipped: {skipped}",     ColorSkipped);
             DrawColorLabel($"Completed: {completed}", ColorCompleted);
+            DrawColorLabel($"Cancelled: {cancelled}", ColorCancelled);
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space(4);
@@ -104,6 +106,7 @@ namespace ChainPattern.Editor
             DrawColorLabel("Started",   ColorDispatched);
             DrawColorLabel("Skipped",   ColorSkipped);
             DrawColorLabel("Completed", ColorCompleted);
+            DrawColorLabel("Cancelled", ColorCancelled);
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
         }
@@ -116,13 +119,13 @@ namespace ChainPattern.Editor
             GUI.color = prev;
         }
 
-        void CountChains(BaseChain chain, out int ready, out int dispatched, out int skipped, out int completed)
+        void CountChains(BaseChain chain, out int ready, out int dispatched, out int skipped, out int completed, out int cancelled)
         {
-            ready = dispatched = skipped = completed = 0;
-            CountChainsRecursive(chain, ref ready, ref dispatched, ref skipped, ref completed);
+            ready = dispatched = skipped = completed = cancelled = 0;
+            CountChainsRecursive(chain, ref ready, ref dispatched, ref skipped, ref completed, ref cancelled);
         }
 
-        void CountChainsRecursive(BaseChain chain, ref int ready, ref int dispatched, ref int skipped, ref int completed)
+        void CountChainsRecursive(BaseChain chain, ref int ready, ref int dispatched, ref int skipped, ref int completed, ref int cancelled)
         {
             switch (chain.DebugState)
             {
@@ -130,10 +133,11 @@ namespace ChainPattern.Editor
                 case "Started":   dispatched++;   break;
                 case "Skipped":   skipped++;   break;
                 case "Completed": completed++; break;
+                case "Cancelled": cancelled++; break;
             }
             foreach (var child in chain.DebugChildren)
             {
-                CountChainsRecursive(child, ref ready, ref dispatched, ref skipped, ref completed);
+                CountChainsRecursive(child, ref ready, ref dispatched, ref skipped, ref completed, ref cancelled);
             }
         }
 
@@ -161,6 +165,7 @@ namespace ChainPattern.Editor
                 "Dispatched"=> ColorDispatched,
                 "Skipped"   => ColorSkipped,
                 "Completed" => ColorCompleted,
+                "Cancelled" => ColorCancelled,
                 _           => Color.white,
             };
 

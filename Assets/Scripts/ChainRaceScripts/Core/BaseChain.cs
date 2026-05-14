@@ -23,6 +23,9 @@ namespace ChainPattern {
             Dispatched = 2,
             Skipped = 4,
             Completed = 8,
+#if UNITY_EDITOR
+            Cancelled = 256,
+#endif
         }
 
         UniTaskCompletionSource<bool> currentUtcs = default;
