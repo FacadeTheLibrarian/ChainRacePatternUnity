@@ -26,7 +26,7 @@ namespace ChainPattern {
         }
 
         UniTaskCompletionSource<bool> currentUtcs = default;
-        ChainContext upstreamContext = default;
+        IContextInvokable upstreamContext = default;
         protected ChainState chainState = default;
 
 #if UNITY_EDITOR
@@ -53,7 +53,7 @@ namespace ChainPattern {
         /// Starts Chain.
         /// Returns a UniTask that completes when the Chain finishes or is skipped.
         /// </summary>
-        public UniTask StartWithCallback(ChainContext upstreamContext) {
+        public UniTask StartWithCallback(IContextInvokable upstreamContext) {
             // If chain has already started, return the existing task to wait for it
             if (chainState != ChainState.Ready) {
                 return currentUtcs?.Task ?? UniTask.CompletedTask;

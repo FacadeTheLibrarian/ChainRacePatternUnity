@@ -10,7 +10,7 @@ namespace ChainPattern {
     /// <remarks>A ChainContext instance is typically used to coordinate the flow of a chain-based operation,
     /// such as in a pipeline or workflow. Once either Complete or Skip is called, subsequent calls to these methods
     /// have no effect (ignored). This class is not thread-safe, but 99% safe while using UniTask</remarks>
-    public class ChainContext : IDisposable {
+    public class ChainContext : IContextInvokable, IDisposable {
         Action<BaseChain> onChainComplete = default;
         Action<BaseChain> onChainSkip = default;
         bool hasAnyCalled = false;
