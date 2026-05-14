@@ -45,6 +45,10 @@ namespace ChainPattern {
         }
         public virtual void Dispose() { }
 
+        /// <summary>
+        /// Starts Chain without any callbacks.
+        /// </summary>
+        /// <returns>Task completes when done</returns>
         public UniTask Start() {
             return StartWithCallback(null);
         }
@@ -52,7 +56,10 @@ namespace ChainPattern {
         /// <summary>
         /// Starts Chain.
         /// Returns a UniTask that completes when the Chain finishes or is skipped.
+        /// Implements should be just dispathcing the logic.
         /// </summary>
+        /// <param name="upstreamContext">context that upstream callbacks are set</param>
+        /// <returns>Task completes when done</returns>
         public UniTask StartWithCallback(IContextInvokable upstreamContext) {
             // If chain has already started, return the existing task to wait for it
             if (chainState != ChainState.Ready) {
