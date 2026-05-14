@@ -15,7 +15,7 @@ namespace ChainPattern {
         private CancellationTokenSource _tokenSource = default;
         private bool _isDispatched = false;
 
-        public ChainWork(IChainWorkLifeCycle lifeCycle = null) {
+        public ChainWork(IChainWorkLifeCycle lifeCycle) {
             _lifeCycle = lifeCycle;
         }
 
@@ -55,7 +55,13 @@ namespace ChainPattern {
         private async UniTask FrameLoopAsync(CancellationToken token) {
             try {
                 while (!token.IsCancellationRequested) {
-                    _lifeCycle?.Update();
+                    bool shouldEnd = false;
+                    if (_lifeCycle != null) {
+                        shouldEnd = _lifeCycle.Update();
+                    }
+                    if (shouldEnd) {
+                        End();
+                    }
                     await UniTask.Yield(PlayerLoopTiming.Update, token);
                 }
             }
