@@ -10,7 +10,7 @@ namespace ChainPattern.Tests
             bool completed = false;
             bool skipped = false;
             var chain = new ChainImmediateComplete();
-            var context = new ChainContext(_ => completed = true, _ => skipped = true);
+            var context = new OneShotChainContext(_ => completed = true, _ => skipped = true);
             chain.StartWithCallback(context);
             Assert.IsTrue(completed);
             Assert.IsFalse(skipped);
@@ -33,7 +33,7 @@ namespace ChainPattern.Tests
         public void CompleteCallback_CalledExactlyOnce() {
             int callCount = 0;
             var chain = new ChainImmediateComplete();
-            var context = new ChainContext(_ => callCount++, _ => { });
+            var context = new OneShotChainContext(_ => callCount++, _ => { });
             chain.StartWithCallback(context);
             Assert.AreEqual(1, callCount);
         }

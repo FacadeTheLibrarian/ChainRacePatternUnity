@@ -13,7 +13,7 @@ namespace ChainPattern.Tests
         //    bool completed = false;
         //    bool skipped = false;
         //    var chain = new ChainDelay(10f);
-        //    var context = new ChainContext(_=> completed = true, _ => skipped = true);
+        //    var context = new OneShotChainContext(_=> completed = true, _ => skipped = true);
         //    chain.Start(context);
         //    Assert.IsTrue(completed);
         //    Assert.IsFalse(skipped);
@@ -23,7 +23,7 @@ namespace ChainPattern.Tests
         public IEnumerator Start_DoesNotCompleteImmediately() {
             bool completed = false;
             var chain = new ChainDelay(1.0f);
-            var context = new ChainContext(_ => completed = true, _ => { });
+            var context = new OneShotChainContext(_ => completed = true, _ => { });
             chain.StartWithCallback(context);
             float elapsedTime = 0.0f;
             Assert.IsFalse(completed);
@@ -45,7 +45,7 @@ namespace ChainPattern.Tests
             bool completed = false;
             bool skipped = false;
             var chain = new ChainDelay(10f);
-            var context = new ChainContext(_ => completed = true, _ => skipped = true);
+            var context = new OneShotChainContext(_ => completed = true, _ => skipped = true);
             chain.StartWithCallback(context);
             chain.Skip();
             Assert.IsFalse(completed);

@@ -75,7 +75,6 @@ namespace ChainPattern {
                 return;
             }
             currentChain = chainQueue.Dequeue();
-            downstreamContext.Reset();
             currentChain.StartWithCallback(downstreamContext);
         }
 

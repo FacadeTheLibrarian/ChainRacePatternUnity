@@ -10,7 +10,7 @@ namespace ChainPattern {
     public class ChainRace : BaseChain {
         Queue<BaseChain> chainQueue = new Queue<BaseChain>();
         List<BaseChain> dispatchedChainList = new List<BaseChain>();
-        ChainContext downstreamContext = default;
+        OneShotChainContext downstreamContext = default;
 
         enum RaceState {
             Ready,
@@ -30,7 +30,7 @@ namespace ChainPattern {
         public ChainRace(params BaseChain[] chains) {
             raceState = RaceState.Ready;
             chainQueue = new Queue<BaseChain>(chains);
-            downstreamContext = new ChainContext(OnChainComplete, OnChainComplete);
+            downstreamContext = new OneShotChainContext(OnChainComplete, OnChainComplete);
 #if UNITY_EDITOR
             debugChainList.AddRange(chains);
 #endif

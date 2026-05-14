@@ -10,7 +10,7 @@ namespace ChainPattern.Tests
             bool completed = false;
             bool skipped = false;
             var chain = new ChainFreeze();
-            var context = new ChainContext(_ => completed = true, _ => skipped = true);
+            var context = new OneShotChainContext(_ => completed = true, _ => skipped = true);
             chain.StartWithCallback(context);
             Assert.IsFalse(completed);
             Assert.IsFalse(skipped);
@@ -27,7 +27,7 @@ namespace ChainPattern.Tests
             bool completed = false;
             bool skipped = false;
             var chain = new ChainFreeze();
-            var context = new ChainContext(_ => completed = true, _ => skipped = true);
+            var context = new OneShotChainContext(_ => completed = true, _ => skipped = true);
             chain.StartWithCallback(context);
             chain.Skip();
             Assert.IsFalse(completed);

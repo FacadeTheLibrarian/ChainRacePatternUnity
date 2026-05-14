@@ -121,7 +121,6 @@ namespace ChainPattern {
                     Complete();
                     return;
                 }
-                downstreamContext.Reset();
             }
         }
 #if UNITY_EDITOR

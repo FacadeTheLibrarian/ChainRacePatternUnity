@@ -15,7 +15,7 @@ namespace ChainPattern.Tests {
             var firstWork = new ChainWork();
             sequence.Add(firstWork);
 
-            var context = new ChainContext();
+            var context = new OneShotChainContext();
             var sequenceTask = sequence.StartWithCallback(context);
 
             await UniTask.Yield(); // 1フレーム待機してfirstWorkを実行状態にする
@@ -48,7 +48,7 @@ namespace ChainPattern.Tests {
             var firstWork = new ChainWork();
             parallel.Add(firstWork);
 
-            var context = new ChainContext();
+            var context = new OneShotChainContext();
             var parallelTask = parallel.StartWithCallback(context);
 
             await UniTask.Yield();
@@ -86,7 +86,7 @@ namespace ChainPattern.Tests {
             var firstWork = new ChainWork(new ChainWorkLifeCycleMock(onSkip: () => firstSkipped = true));
             race.Add(firstWork);
 
-            var context = new ChainContext();
+            var context = new OneShotChainContext();
             var raceTask = race.StartWithCallback(context);
 
             await UniTask.Yield();
@@ -128,7 +128,7 @@ namespace ChainPattern.Tests {
             var seqNextWork = new ChainWork(new ChainWorkLifeCycleMock(onStart: () => seqNextWorkStarted = true));
             var sequence = new ChainSequence(race, seqNextWork);
 
-            var context = new ChainContext();
+            var context = new OneShotChainContext();
             var sequenceTask = sequence.StartWithCallback(context);
 
             await UniTask.Yield(); 

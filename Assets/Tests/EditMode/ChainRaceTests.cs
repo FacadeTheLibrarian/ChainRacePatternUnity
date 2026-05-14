@@ -10,7 +10,7 @@ namespace ChainPattern.Tests
             bool completed = false;
             bool skipped = false;
             var chain = new ChainRace();
-            ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
+            OneShotChainContext context = new OneShotChainContext(_ => { completed = true; }, _ => { skipped = true; });
             chain.StartWithCallback(context);
             Assert.IsTrue(completed);
             Assert.IsFalse(skipped);
@@ -21,7 +21,7 @@ namespace ChainPattern.Tests
             bool completed = false;
             bool skipped = false;
             var chain = new ChainRace(new ChainImmediateComplete());
-            ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
+            OneShotChainContext context = new OneShotChainContext(_ => { completed = true; }, _ => { skipped = true; });
             chain.StartWithCallback(context);
             Assert.IsTrue(completed);
             Assert.IsFalse(skipped);
@@ -35,7 +35,7 @@ namespace ChainPattern.Tests
             var work = new ChainWork(new ChainWorkLifeCycleMock(onSkip: () => workSkipCalled = true));
 
             var chain = new ChainRace(new ChainImmediateComplete(), work);
-            ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
+            OneShotChainContext context = new OneShotChainContext(_ => { completed = true; }, _ => { skipped = true; });
             chain.StartWithCallback(context);
 
             Assert.IsTrue(completed);
@@ -50,7 +50,7 @@ namespace ChainPattern.Tests
             var work1 = new ChainWork(new ChainWorkLifeCycleMock());
             var work2 = new ChainWork(new ChainWorkLifeCycleMock());
             var chain = new ChainRace(work1, work2);
-            ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
+            OneShotChainContext context = new OneShotChainContext(_ => { completed = true; }, _ => { skipped = true; });
             chain.StartWithCallback(context);
             Assert.IsFalse(completed);
             Assert.IsFalse(skipped);
@@ -69,7 +69,7 @@ namespace ChainPattern.Tests
             var work3 = new ChainWork(new ChainWorkLifeCycleMock(onSkip: () => work3SkipCalled = true));
 
             var chain = new ChainRace(work1, work2, work3);
-            ChainContext context = new ChainContext();
+            OneShotChainContext context = new OneShotChainContext();
             chain.StartWithCallback(context);
             work1.End();
 
@@ -87,7 +87,7 @@ namespace ChainPattern.Tests
             var work3 = new ChainWork(new ChainWorkLifeCycleMock(onSkip: () => work3SkipCalled = true));
 
             var chain = new ChainRace(work1, work2, work3);
-            ChainContext context = new ChainContext();
+            OneShotChainContext context = new OneShotChainContext();
             chain.StartWithCallback(context);
             work2.End();
 
@@ -111,7 +111,7 @@ namespace ChainPattern.Tests
             var work2 = new ChainWork(new ChainWorkLifeCycleMock(onSkip: () => work2SkipCalled = true));
 
             var chain = new ChainRace(work1, work2);
-            ChainContext context = new ChainContext();
+            OneShotChainContext context = new OneShotChainContext();
             chain.StartWithCallback(context);
             chain.Skip();
 
@@ -124,7 +124,7 @@ namespace ChainPattern.Tests
             bool completed = false;
             bool skipped = false;
             var chain = new ChainRace(new ChainWork(new ChainWorkLifeCycleMock()), new ChainWork(new ChainWorkLifeCycleMock()));
-            ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
+            OneShotChainContext context = new OneShotChainContext(_ => { completed = true; }, _ => { skipped = true; });
             chain.StartWithCallback(context);
             chain.Skip();
             Assert.IsFalse(completed);
@@ -137,7 +137,7 @@ namespace ChainPattern.Tests
         //    bool? childFastForward = null;
         //    var child = new ChainAction(() => childFastForward = true);
         //    var chain = new ChainRace(child);
-        //    ChainContext context = new ChainContext();
+        //    OneShotChainContext context = new OneShotChainContext();
         //    chain.Start(context);
         //    Assert.AreEqual(true, childFastForward);
         //}

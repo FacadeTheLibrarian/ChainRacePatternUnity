@@ -8,7 +8,7 @@ namespace ChainPattern.Tests {
         public void Start_Invokes_OnStartCallback() {
             bool startCalled = false;
             var chain = new ChainWork(new ChainWorkLifeCycleMock(onStart: () => startCalled = true));
-            ChainContext context = new ChainContext();
+            OneShotChainContext context = new OneShotChainContext();
             chain.StartWithCallback(context);
             Assert.IsTrue(startCalled);
         }
@@ -17,7 +17,7 @@ namespace ChainPattern.Tests {
         public void Start_DoesNot_CompleteImmediately() {
             bool completed = false;
             var chain = new ChainWork(new ChainWorkLifeCycleMock());
-            ChainContext context = new ChainContext(_ => completed = true, _ => { });
+            OneShotChainContext context = new OneShotChainContext(_ => completed = true, _ => { });
             chain.StartWithCallback(context);
             Assert.IsFalse(completed);
             chain.End();
@@ -28,7 +28,7 @@ namespace ChainPattern.Tests {
         public void End_CompletesChain() {
             bool completed = false;
             var chain = new ChainWork(new ChainWorkLifeCycleMock());
-            ChainContext context = new ChainContext(_ => completed = true, _ => { });
+            OneShotChainContext context = new OneShotChainContext(_ => completed = true, _ => { });
             chain.StartWithCallback(context);
             chain.End();
             Assert.IsTrue(completed);
@@ -49,7 +49,7 @@ namespace ChainPattern.Tests {
             bool chainSkipped = false;
             bool skipCalledInternally = false;
             var chain = new ChainWork(new ChainWorkLifeCycleMock(onSkip: () => skipCalledInternally = true));
-            ChainContext context = new ChainContext(_ => { chainCompleted = true; }, _ => { chainSkipped = true; });
+            OneShotChainContext context = new OneShotChainContext(_ => { chainCompleted = true; }, _ => { chainSkipped = true; });
             chain.StartWithCallback(context);
             chain.Skip();
             Assert.IsFalse(chainCompleted);
@@ -62,7 +62,7 @@ namespace ChainPattern.Tests {
             bool completed = false;
             bool skipped = false;
             var chain = new ChainWork(new ChainWorkLifeCycleMock());
-            ChainContext context = new ChainContext(_ => completed = true, _ => skipped = true);
+            OneShotChainContext context = new OneShotChainContext(_ => completed = true, _ => skipped = true);
             chain.StartWithCallback(context);
             chain.Skip();
             Assert.IsFalse(completed);
@@ -74,7 +74,7 @@ namespace ChainPattern.Tests {
             bool completed = false;
             bool skipped = false;
             var chain = new ChainWork(new ChainWorkLifeCycleMock());
-            ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
+            OneShotChainContext context = new OneShotChainContext(_ => { completed = true; }, _ => { skipped = true; });
             chain.StartWithCallback(context);
             chain.Skip();
             chain.End();

@@ -30,7 +30,7 @@ namespace ChainPattern.Tests {
                         work4
                 )
             );
-            ChainContext context = new ChainContext();
+            OneShotChainContext context = new OneShotChainContext();
             chain.StartWithCallback(context);
 
             work1.End();
@@ -66,7 +66,7 @@ namespace ChainPattern.Tests {
                         work4
                 )
             );
-            ChainContext context = new ChainContext();
+            OneShotChainContext context = new OneShotChainContext();
             chain.StartWithCallback(context);
             Assert.IsTrue(work1End);
             Assert.IsTrue(work2Started);
@@ -98,7 +98,7 @@ namespace ChainPattern.Tests {
             ));
 
             var chain = new ChainRace(sequence, raceOpponent);
-            ChainContext context = new ChainContext();
+            OneShotChainContext context = new OneShotChainContext();
             chain.StartWithCallback(context);
 
             Assert.IsTrue(seq1Started);
@@ -133,7 +133,7 @@ namespace ChainPattern.Tests {
 
             var race = new ChainRace(raceWorkA, raceWorkB);
             var sequence = new ChainSequence(race, seqNextWork);
-            ChainContext context = new ChainContext();
+            OneShotChainContext context = new OneShotChainContext();
 
             sequence.StartWithCallback(context);
 
@@ -164,7 +164,7 @@ namespace ChainPattern.Tests {
             var sequence2 = new ChainSequence(seq2A, seq2B);
 
             var parallel = new ChainParallel(sequence1, sequence2);
-            ChainContext context = new ChainContext((_) => parallelCompleted = true, null);
+            OneShotChainContext context = new OneShotChainContext((_) => parallelCompleted = true, null);
 
             parallel.StartWithCallback(context);
 
@@ -205,7 +205,7 @@ namespace ChainPattern.Tests {
             var parallel = new ChainParallel(b, race);
             var rootSequence = new ChainSequence(a, parallel);
 
-            ChainContext context = new ChainContext();
+            OneShotChainContext context = new OneShotChainContext();
             rootSequence.StartWithCallback(context);
 
             // B, C, D are running in parallel/race
@@ -233,7 +233,7 @@ namespace ChainPattern.Tests {
                 new ChainSequence()
             );
 
-            ChainContext context = new ChainContext((_) => completed = true, null);
+            OneShotChainContext context = new OneShotChainContext((_) => completed = true, null);
             chain.StartWithCallback(context);
 
             Assert.IsTrue(completed);
