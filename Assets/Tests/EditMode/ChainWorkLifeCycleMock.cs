@@ -6,12 +6,12 @@ namespace ChainPattern {
 
         private System.Action start = delegate { };
         private System.Action skip = delegate { };
-        private System.Action update = delegate { };
+        private System.Func<bool> update = delegate { return false; };
 
         public ChainWorkLifeCycleMock(
             System.Action onStart = null,
             System.Action onSkip = null,
-            System.Action onUpdate = null
+            System.Func<bool> onUpdate = null
         ) {
             start = onStart;
             skip = onSkip;
@@ -26,9 +26,12 @@ namespace ChainPattern {
             skipCalled = true;
             skip?.Invoke();
         }
-        public void Update() {
+        public bool Update() {
             updateCalled = true;
-            update?.Invoke();
+            if (update == null) {
+                return false;
+            }
+            return update.Invoke();
         }
     }
 }

@@ -47,8 +47,8 @@ namespace ChainPattern.Tests
         public void WaitsForFirstCompletion() {
             bool completed = false;
             bool skipped = false;
-            var work1 = new ChainWork();
-            var work2 = new ChainWork();
+            var work1 = new ChainWork(new ChainWorkLifeCycleMock());
+            var work2 = new ChainWork(new ChainWorkLifeCycleMock());
             var chain = new ChainRace(work1, work2);
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
             chain.StartWithCallback(context);
@@ -123,7 +123,7 @@ namespace ChainPattern.Tests
         public void Skip_AfterStart_DoesNotInvokeCompleteCallback() {
             bool completed = false;
             bool skipped = false;
-            var chain = new ChainRace(new ChainWork(), new ChainWork());
+            var chain = new ChainRace(new ChainWork(new ChainWorkLifeCycleMock()), new ChainWork(new ChainWorkLifeCycleMock()));
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
             chain.StartWithCallback(context);
             chain.Skip();

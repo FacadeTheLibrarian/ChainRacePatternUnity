@@ -155,9 +155,9 @@ namespace ChainPattern.Tests {
             bool seq2BStarted = false;
             bool parallelCompleted = false;
 
-            var seq1A = new ChainWork();
+            var seq1A = new ChainWork(new ChainWorkLifeCycleMock());
             var seq1B = new ChainWork(new ChainWorkLifeCycleMock(onStart: () => seq1BStarted = true));
-            var seq2A = new ChainWork();
+            var seq2A = new ChainWork(new ChainWorkLifeCycleMock());
             var seq2B = new ChainWork(new ChainWorkLifeCycleMock(onStart: () => seq2BStarted = true));
 
             var sequence1 = new ChainSequence(seq1A, seq1B);

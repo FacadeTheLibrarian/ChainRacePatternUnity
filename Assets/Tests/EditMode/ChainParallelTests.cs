@@ -31,7 +31,7 @@ namespace ChainPattern.Tests
         public void WaitsForAllChains_NotCompletedUntilLastDone() {
             bool completed = false;
             bool skipped = false;
-            var work = new ChainWork();
+            var work = new ChainWork(new ChainWorkLifeCycleMock());
             var chain = new ChainParallel(new ChainImmidiateComplete(), work);
             var context = new ChainContext(_ => completed = true, _ => skipped = true);
             chain.StartWithCallback(context);
@@ -45,8 +45,8 @@ namespace ChainPattern.Tests
         public void CompletesOnlyWhenAllDone() {
             bool completed = false;
             bool skipped = false;
-            var work1 = new ChainWork();
-            var work2 = new ChainWork();
+            var work1 = new ChainWork(new ChainWorkLifeCycleMock());
+            var work2 = new ChainWork(new ChainWorkLifeCycleMock());
             var chain = new ChainParallel(work1, work2);
             var context = new ChainContext(_ => completed = true, _ => skipped = true);
             chain.StartWithCallback(context);
@@ -87,7 +87,7 @@ namespace ChainPattern.Tests
         public void Skip_AfterStart_DoesNotInvokeCompleteCallback() {
             bool completed = false;
             bool skipped = false;
-            var chain = new ChainParallel(new ChainWork(), new ChainWork());
+            var chain = new ChainParallel(new ChainWork(new ChainWorkLifeCycleMock()), new ChainWork(new ChainWorkLifeCycleMock()));
             var context = new ChainContext(_ => completed = true, _ => skipped = true);
             chain.StartWithCallback(context);
             chain.Skip();
