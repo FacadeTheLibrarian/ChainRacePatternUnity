@@ -88,7 +88,7 @@ namespace ChainPattern {
         /// Called when skipped
         /// </summary>
         protected override void SkipInternal() {
-            downstreamContext.Release();
+            downstreamContext.ReleaseCallbacks();
             raceState = RaceState.Skipped;
             SkipAll();
             raceState = RaceState.Finished;

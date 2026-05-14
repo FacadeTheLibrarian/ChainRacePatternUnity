@@ -50,7 +50,7 @@ namespace ChainPattern {
         /// <summary>
         /// Clears both complete and skip callbacks, preventing further callback calls.
         /// </summary>
-        public void Release() {
+        public void ReleaseCallbacks() {
             onChainComplete = null;
             onChainSkip = null;
         }

@@ -89,7 +89,7 @@ namespace ChainPattern {
         /// Called when skipped
         /// </summary>
         protected override void SkipInternal() {
-            downstreamContext.Release();
+            downstreamContext.ReleaseCallbacks();
             parallelState = ParallelState.Skipping;
             ConsumeStartedAndPendingChains();
             parallelState = ParallelState.Finished;
