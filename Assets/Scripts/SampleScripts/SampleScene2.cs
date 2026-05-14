@@ -37,7 +37,7 @@ namespace Sample
                 resultDialog.SetPanelInitialPosition();
                 startButton.interactable = false;
                 Debug.Log("START");
-                Chain chain = ChainResult();
+                BaseChain chain = ChainResult();
 #if UNITY_EDITOR
                 ChainPattern.Editor.ChainDebugWindow.Watch(chain);
 #endif  
@@ -51,7 +51,7 @@ namespace Sample
         /// shows the result dialog with ranking player animation and fade in effect, 
         /// then hides the dialog with fade out effect. The skip button can be used to skip the animations and effects.
         /// </summary>
-        public Chain ChainResult()
+        public BaseChain ChainResult()
         {
             return new ChainSequence(
                 new ChainDelay(0.5f),
@@ -83,7 +83,7 @@ namespace Sample
         /// <summary>
         /// show the touch screen and wait until the screen button is pressed, then hide the touch screen
         /// </summary>
-        private Chain ChainTouchScreen()
+        private BaseChain ChainTouchScreen()
         {
             return new ChainSequence(
                 new ChainAction(() =>

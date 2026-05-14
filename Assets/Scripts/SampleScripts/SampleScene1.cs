@@ -169,11 +169,10 @@ namespace Sample
             await chainSequence.Start();
         }
 
-
         /// <summary>
         /// Enables or disables the sequence buttons        
         /// </summary>
-        private Chain ChainSetButtonsEnabled(bool enabed)
+        private BaseChain ChainSetButtonsEnabled(bool enabed)
         {
             return new ChainAction(() =>
             {
@@ -187,7 +186,7 @@ namespace Sample
         /// <summary>
         /// Sets the text of the moving rectangle
         /// </summary>
-        private Chain ChainSetMoveRectText(string text)
+        private BaseChain ChainSetMoveRectText(string text)
         {
             return new ChainAction(() =>
             {
@@ -198,7 +197,7 @@ namespace Sample
         /// <summary>
         /// Sets the position of the moving rectangle
         /// </summary>
-        private Chain ChainSetMoveRectPosition(Vector2 position)
+        private BaseChain ChainSetMoveRectPosition(Vector2 position)
         {
             return new ChainAction(() =>
             {

@@ -33,7 +33,7 @@ namespace Sample
         /// <summary>
         /// show the bonus animation and update the point text area to end
         /// </summary>        
-        public Chain ChainBonus(int totalPointAfterBonus)
+        public BaseChain ChainBonus(int totalPointAfterBonus)
         {
             return new ChainParallel(
                 new ChainAnimator(animator, "ResultPlayerAnimBonus"),
@@ -48,7 +48,7 @@ namespace Sample
         /// <summary>
         /// Creates a chain that animates the point text area from start to end
         /// </summary>
-        public Chain ChainPointAnimation(int end)
+        public BaseChain ChainPointAnimation(int end)
         {
             int start = playerPoint;
             playerPoint = end;

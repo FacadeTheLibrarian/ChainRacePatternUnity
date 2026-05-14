@@ -25,7 +25,7 @@ namespace Sample
         /// Creates a chain that fades in and out
         /// the fade-in changes the alpha value from 0 to1
         /// </summary>
-        public Chain ChainFade(bool fadeIn)
+        public BaseChain ChainFade(bool fadeIn)
         {
             if (fadeIn)
             {

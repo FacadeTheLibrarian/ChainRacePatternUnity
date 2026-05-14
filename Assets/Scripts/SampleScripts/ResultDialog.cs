@@ -116,7 +116,7 @@ namespace Sample
         /// <summary>
         /// Show the dialog with animation and displaying RankingPlayers
         /// </summary>
-        public Chain ChainShowDialog()
+        public BaseChain ChainShowDialog()
         {
             return new ChainParallel(
                 ChainShowRankingPlayers(),
@@ -128,7 +128,7 @@ namespace Sample
         /// show bonus point animation for each player
         /// </summary>
         /// <returns></returns>
-        public Chain ChainShowBonus()
+        public BaseChain ChainShowBonus()
         {
             ChainParallel parallel = new ChainParallel();
             int index = 0;
@@ -152,7 +152,7 @@ namespace Sample
         /// <summary>
         /// Show the dialog with animation and displaying RankingPlayers
         /// </summary>
-        public Chain ChainHideDialog()
+        public BaseChain ChainHideDialog()
         {
             return new ChainParallel(
                 new ChainAnimator(animator, "ResultDialogHideAnim"),
@@ -166,7 +166,7 @@ namespace Sample
         /// <summary>
         /// Create a chain to display RankingPlayers
         /// </summary>
-        public Chain ChainShowRankingPlayers()
+        public BaseChain ChainShowRankingPlayers()
         {
             var parallel = new ChainParallel();
             var curve = AnimationCurve.EaseInOut(0.0f, 0.0f, 1.0f, 1.0f);
@@ -200,7 +200,7 @@ namespace Sample
         /// <summary>
         /// Create a chain to hide RankingPlayers
         /// </summary>
-        public Chain ChainHideRankingPlayers()
+        public BaseChain ChainHideRankingPlayers()
         {
             var parallel = new ChainParallel();
             var curve = AnimationCurve.EaseInOut(0.0f, 0.0f, 1.0f, 1.0f);
