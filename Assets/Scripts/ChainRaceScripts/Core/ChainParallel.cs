@@ -66,7 +66,7 @@ namespace ChainPattern {
         }
 
         /// <summary>
-        /// Starts execution
+        /// Starts chains in parallel. Completes when all chains have completed.
         /// </summary>
         protected override void StartInternal() {
             if (chainQueue.Count <= 0) {

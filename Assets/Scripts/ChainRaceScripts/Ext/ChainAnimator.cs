@@ -29,7 +29,8 @@ namespace ChainPattern
         }
 
         /// <summary>
-        /// Starts execution
+        /// Starts the chain by playing the specified animation state and waiting for it to finish.
+        /// If the animator is null, completes immediately.
         /// </summary>
         protected override void StartInternal()
         {

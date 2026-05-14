@@ -18,7 +18,9 @@ namespace ChainPattern
         }
 
         /// <summary>
-        /// Starts execution
+        /// Starts chain, enabling the button and adding a click listener. 
+        /// Completes when the button is clicked.
+        /// Do nothing if the button is null, completing immediately.
         /// </summary>
         protected override void StartInternal()
         {

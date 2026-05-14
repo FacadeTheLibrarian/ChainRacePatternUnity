@@ -46,7 +46,7 @@ namespace ChainPattern {
         }
 
         /// <summary>
-        /// Starts execution
+        /// Starts chains in sequence. Completes when all chains have completed, or when skipped.
         /// </summary>
         protected override void StartInternal() {
             NextChain();

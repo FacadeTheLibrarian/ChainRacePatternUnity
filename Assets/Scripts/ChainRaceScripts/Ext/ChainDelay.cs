@@ -23,12 +23,9 @@ namespace ChainPattern
             DELAY_SECONDS = seconds;
         }
 
-        public override void Dispose() {
-            
-        }
-
         /// <summary>
-        /// Starts execution
+        /// Starts chain by executing UniTask.Delay for the specified duration.
+        /// Completes when the delay finishes.
         /// </summary>
         protected override void StartInternal()
         {

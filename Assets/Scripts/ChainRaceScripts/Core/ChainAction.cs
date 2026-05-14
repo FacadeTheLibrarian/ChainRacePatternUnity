@@ -6,7 +6,7 @@ using System;
 namespace ChainPattern
 {
     /// <summary>
-    /// Chain that executes a single action/function
+    /// Chain that its final action is a single action/function
     /// </summary>
     public class ChainAction : BaseChain
     {
@@ -25,7 +25,7 @@ namespace ChainPattern
         }
 
         /// <summary>
-        /// Sets the action to be executed
+        /// Replace Action to call
         /// </summary>
         public void SetAction(Action action)
         {
@@ -33,7 +33,7 @@ namespace ChainPattern
         }
 
         /// <summary>
-        /// Starts execution
+        /// Starts calling the action and completes the chain
         /// </summary>
         protected override void StartInternal()
         {
@@ -42,12 +42,12 @@ namespace ChainPattern
             Complete();
         }
 
-        // NOTE: 元スクリプトの Start() -> if(!complete) Skip() だと、Start でも Skip でも actionToCall を呼びたい
-        // 違うのはCompleteするかどうかなので結局同じだと思われる
+        // NOTE: 元スクリプトの Start() -> if(!complete) Skip() だと、Start でも Skip でも actionToCall は呼びたい(呼ばれる)
+        // 違うのはCompleteするかどうかなのでそれなら結局同じ
         // In the original script, Start() -> if(!complete) Skip() is called, and we want to call actionToCall in both Start and Skip.
         // The only difference is whether to call Complete or not, so it seems to be the same.
         /// <summary>
-        /// Called when skipped
+        /// Skip with calling the action, but does NOT complete the chain
         /// </summary>
         protected override void SkipInternal()
         {

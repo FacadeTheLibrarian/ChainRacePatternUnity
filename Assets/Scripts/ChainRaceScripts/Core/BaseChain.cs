@@ -27,7 +27,6 @@ namespace ChainPattern {
 
         UniTaskCompletionSource<bool> currentUtcs = default;
         ChainContext upstreamContext = default;
-
         protected ChainState chainState = default;
 
 #if UNITY_EDITOR
@@ -51,7 +50,7 @@ namespace ChainPattern {
         }
 
         /// <summary>
-        /// Starts execution of the Chain.
+        /// Starts Chain.
         /// Returns a UniTask that completes when the Chain finishes or is skipped.
         /// </summary>
         public UniTask StartWithCallback(ChainContext upstreamContext) {
@@ -71,7 +70,6 @@ namespace ChainPattern {
 
         /// <summary>
         /// Skips the Chain, transitioning it immediately to its final state.
-        /// The completion callback is NOT invoked on skip.
         /// </summary>
         public void Skip() {
             // chainState should be Started or Ready to allow skip
@@ -92,7 +90,6 @@ namespace ChainPattern {
 
         /// <summary>
         /// Marks the Chain as completed. Must be called by derived classes when their work is done.
-        /// Must NOT be called from SkipInternal().
         /// </summary>
         protected void Complete() {
             if (chainState != ChainState.Started) {
@@ -108,13 +105,13 @@ namespace ChainPattern {
 
         /// <summary>
         /// Implement the Chain's main logic here.
-        /// Call Complete() when done. If isFastForward is true, jump to the final state and call Complete() immediately.
+        /// if the Chain finishes normally, call Complete() to transition to Completed state.
         /// </summary>
         protected abstract void StartInternal();
 
         /// <summary>
         /// Implement immediate transition to the final state here.
-        /// Do NOT call Complete() — the Chain infrastructure handles task resolution after Skip().
+        /// Skip never completes, co do NOT call Complete(), that has different actor
         /// </summary>
         protected abstract void SkipInternal();
 

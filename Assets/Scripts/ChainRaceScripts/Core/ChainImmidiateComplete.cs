@@ -11,7 +11,7 @@ namespace ChainPattern
     public class ChainImmidiateComplete : BaseChain
     {
         /// <summary>
-        /// Starts execution
+        /// Starts and completes immediately
         /// </summary>
         protected override void StartInternal()
         {

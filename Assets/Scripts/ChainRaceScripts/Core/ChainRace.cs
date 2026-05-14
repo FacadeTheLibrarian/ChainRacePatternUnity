@@ -62,7 +62,7 @@ namespace ChainPattern {
         }
 
         /// <summary>
-        /// Starts execution
+        /// Starts race. Completes when any child chain completes, skipping the rest.
         /// </summary>
         protected override void StartInternal() {
             if (chainQueue.Count <= 0) {

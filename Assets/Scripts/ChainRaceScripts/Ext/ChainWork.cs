@@ -20,7 +20,7 @@ namespace ChainPattern {
         }
 
         /// <summary>
-        /// Ends the work execution
+        /// Ends the work
         /// </summary>
         public void End() {
             if (isDispatched) {
@@ -31,7 +31,9 @@ namespace ChainPattern {
         }
 
         /// <summary>
-        /// Starts execution
+        /// Starts chain work by async operation
+        /// If lifeCycle is not provided, no async operation will be performed
+        /// Just waits for End() to be called to complete the chain
         /// </summary>
         protected override void StartInternal() {
             isDispatched = true;

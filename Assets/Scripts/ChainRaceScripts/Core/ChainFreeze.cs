@@ -13,7 +13,7 @@ namespace ChainPattern
     public class ChainFreeze : BaseChain
     {
         /// <summary>
-        /// Starts execution
+        /// Starts Chain logics, but does not complete (freezes indefinitely)
         /// </summary>
         protected override void StartInternal()
         {
