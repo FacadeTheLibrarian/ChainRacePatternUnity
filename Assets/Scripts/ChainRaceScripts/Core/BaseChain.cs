@@ -46,15 +46,15 @@ namespace ChainPattern {
         }
         public virtual void Dispose() { }
 
-        public UniTask StartWithoutCallback() {
-            return Start(null);
+        public UniTask Start() {
+            return StartWithCallback(null);
         }
 
         /// <summary>
         /// Starts execution of the Chain.
         /// Returns a UniTask that completes when the Chain finishes or is skipped.
         /// </summary>
-        public UniTask Start(ChainContext upstreamContext) {
+        public UniTask StartWithCallback(ChainContext upstreamContext) {
             // If chain has already started, return the existing task to wait for it
             if (chainState != ChainState.Ready) {
                 return currentUtcs?.Task ?? UniTask.CompletedTask;

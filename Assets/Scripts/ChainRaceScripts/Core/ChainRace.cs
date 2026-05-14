@@ -49,7 +49,7 @@ namespace ChainPattern {
             }
             else if (raceState == RaceState.Dispatched) {
                 dispatchedChainList.Add(chain);
-                chain.Start(downstreamContext);
+                chain.StartWithCallback(downstreamContext);
             }
             else {
                 // For all states except Started/Finished, queue into pending list
@@ -78,7 +78,7 @@ namespace ChainPattern {
             while (chainQueue.Count > 0 && raceState == RaceState.Dispatching) {
                 BaseChain chain = chainQueue.Dequeue();
                 dispatchedChainList.Add(chain);
-                chain.Start(downstreamContext);
+                chain.StartWithCallback(downstreamContext);
             }
             if (raceState == RaceState.Dispatching) {
                 raceState = RaceState.Dispatched;

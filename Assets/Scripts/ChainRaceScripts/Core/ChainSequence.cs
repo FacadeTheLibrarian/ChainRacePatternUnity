@@ -76,7 +76,7 @@ namespace ChainPattern {
             }
             currentChain = chainQueue.Dequeue();
             downstreamContext.Reset();
-            currentChain.Start(downstreamContext);
+            currentChain.StartWithCallback(downstreamContext);
         }
 
 #if UNITY_EDITOR

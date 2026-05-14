@@ -53,7 +53,7 @@ namespace ChainPattern {
             }
             else if (parallelState == ParallelState.Dispatched) {
                 dispatchedChainList.Add(chain);
-                chain.Start(downstreamContext);
+                chain.StartWithCallback(downstreamContext);
             }
             else {
                 // For all states except Started/Finished, queue into pending list
@@ -78,7 +78,7 @@ namespace ChainPattern {
             while (chainQueue.Count > 0 && parallelState == ParallelState.Dispatching) {
                 BaseChain c = chainQueue.Dequeue();
                 dispatchedChainList.Add(c);
-                c.Start(downstreamContext);
+                c.StartWithCallback(downstreamContext);
             }
             if (parallelState == ParallelState.Dispatching) {
                 parallelState = ParallelState.Dispatched;
