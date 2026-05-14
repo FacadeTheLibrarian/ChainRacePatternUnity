@@ -43,7 +43,14 @@ namespace ChainPattern {
         public BaseChain() {
             chainState = ChainState.Ready;
         }
-        public virtual void Dispose() { }
+        public void Dispose() {
+            currentUtcs?.TrySetCanceled();
+#if UNITY_EDITOR
+            chainState = ChainState.Cancelled;
+#endif
+            OnDispose();
+        }
+        protected virtual void OnDispose() { }
 
         /// <summary>
         /// Starts Chain without any callbacks.

@@ -60,7 +60,7 @@ namespace ChainPattern
             }
             finally
             {
-                // Dispose of resources after completion or cancellation
+                // OnDispose of resources after completion or cancellation
                 _tokenSource?.Dispose();
                 _tokenSource = null;
             }

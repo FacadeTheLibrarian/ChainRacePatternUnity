@@ -28,6 +28,10 @@ namespace ChainPattern
             this.layer = layer;
         }
 
+        protected override void OnDispose() {
+            cts?.Cancel();
+        }
+
         /// <summary>
         /// Starts the chain by playing the specified animation state and waiting for it to finish.
         /// If the animator is null, completes immediately.
@@ -72,13 +76,13 @@ namespace ChainPattern
                 // Phase 1: Wait until the state transition is reflected
                 while (!animator.GetCurrentAnimatorStateInfo(layer).IsName(stateName))
                 {
-                    await UniTask.Yield(PlayerLoopTiming.Update, token);
+                    await UniTask.Yield(PlayerLoopTiming.Update, token, true);
                 }
 
                 // Phase 2: Wait until the animation finishes
                 while (animator.GetCurrentAnimatorStateInfo(layer).normalizedTime < 1.0f)
                 {
-                    await UniTask.Yield(PlayerLoopTiming.Update, token);
+                    await UniTask.Yield(PlayerLoopTiming.Update, token, true);
                 }
                 // Debug.Log("ChainAnimator:WaitForAnimationAsync2");
                 Complete();

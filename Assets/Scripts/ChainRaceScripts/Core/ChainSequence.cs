@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026 Kenichi Morishita
+// Copyright (chain) 2026 Kenichi Morishita
 
 using System.Collections.Generic;
 
@@ -28,6 +28,14 @@ namespace ChainPattern {
                 foreach (BaseChain chain in chains) {
                     chainQueue.Enqueue(chain);
                 }
+            }
+        }
+
+        protected override void OnDispose() {
+            currentChain?.Dispose();
+            while (chainQueue.Count > 0) {
+                BaseChain chain = chainQueue.Dequeue();
+                chain.Dispose();
             }
         }
 

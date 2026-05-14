@@ -1,4 +1,5 @@
 using ChainPattern;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +26,8 @@ namespace Sample
 
         Button startButton;
 
+        BaseChain chainHandle;
+
         void Start()
         {
             touchScreen.SetActive(false);
@@ -37,14 +40,27 @@ namespace Sample
                 resultDialog.SetPanelInitialPosition();
                 startButton.interactable = false;
                 Debug.Log("START");
-                BaseChain chain = ChainResult();
+                chainHandle = ChainResult();
 #if UNITY_EDITOR
-                ChainPattern.Editor.ChainDebugWindow.Watch(chain);
+                ChainPattern.Editor.ChainDebugWindow.Watch(chainHandle);
 #endif  
-                await chain.Start();
+                try {
+                    await chainHandle.Start();
+                }
+                catch (Exception exception){
+#if UNITY_EDITOR
+                    Debug.Log("This is handled exception, operation safely cancelled. \nMessage:" + exception);
+#endif
+                    return;
+                }
                 Debug.Log("END");
+                chainHandle = null;
                 startButton.interactable = true;
             });            
+        }
+
+        void OnDestroy() {
+            chainHandle?.Dispose();    
         }
 
         /// <summary>

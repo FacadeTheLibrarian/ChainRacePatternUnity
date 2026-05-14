@@ -22,7 +22,7 @@ namespace ChainPattern.Editor
         readonly Dictionary<BaseChain, double> completionTimes = new();
 
         static readonly Color ColorReady     = new Color(0.6f, 0.6f, 0.6f);
-        static readonly Color ColorStarted   = new Color(0.4f, 1.0f, 0.4f);
+        static readonly Color ColorDispatched   = new Color(0.4f, 1.0f, 0.4f);
         static readonly Color ColorSkipped   = new Color(1.0f, 0.85f, 0.2f);
         static readonly Color ColorCompleted = new Color(0.5f, 0.8f, 1.0f);
 
@@ -34,7 +34,7 @@ namespace ChainPattern.Editor
 
         /// <summary>
         /// Registers a Chain to observe. Call this from game code during Play Mode.
-        /// Typically called each time a new root Chain is started (e.g., at the top of ChainStart()).
+        /// Typically called each time a new root Chain is dispatched (e.g., at the top of ChainStart()).
         /// </summary>
         public static void Watch(BaseChain chain)
         {
@@ -77,15 +77,15 @@ namespace ChainPattern.Editor
 
             showCompleted = EditorGUILayout.ToggleLeft("Show Completed", showCompleted);
 
-            CountChains(watchedChain, out int ready, out int started, out int skipped, out int completed);
-            int total = ready + started + skipped + completed;
+            CountChains(watchedChain, out int ready, out int dispatched, out int skipped, out int completed);
+            int total = ready + dispatched + skipped + completed;
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label($"Total: {total}", GUILayout.ExpandWidth(false));
             DrawColorLabel($"Ready: {ready}", ColorReady);
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
-            DrawColorLabel($"Started: {started}",     ColorStarted);
+            DrawColorLabel($"Dispatched: {dispatched}",     ColorDispatched);
             DrawColorLabel($"Skipped: {skipped}",     ColorSkipped);
             DrawColorLabel($"Completed: {completed}", ColorCompleted);
             GUILayout.FlexibleSpace();
@@ -101,7 +101,7 @@ namespace ChainPattern.Editor
         {
             EditorGUILayout.BeginHorizontal();
             DrawColorLabel("Ready",     ColorReady);
-            DrawColorLabel("Started",   ColorStarted);
+            DrawColorLabel("Started",   ColorDispatched);
             DrawColorLabel("Skipped",   ColorSkipped);
             DrawColorLabel("Completed", ColorCompleted);
             GUILayout.FlexibleSpace();
@@ -116,24 +116,24 @@ namespace ChainPattern.Editor
             GUI.color = prev;
         }
 
-        void CountChains(BaseChain chain, out int ready, out int started, out int skipped, out int completed)
+        void CountChains(BaseChain chain, out int ready, out int dispatched, out int skipped, out int completed)
         {
-            ready = started = skipped = completed = 0;
-            CountChainsRecursive(chain, ref ready, ref started, ref skipped, ref completed);
+            ready = dispatched = skipped = completed = 0;
+            CountChainsRecursive(chain, ref ready, ref dispatched, ref skipped, ref completed);
         }
 
-        void CountChainsRecursive(BaseChain chain, ref int ready, ref int started, ref int skipped, ref int completed)
+        void CountChainsRecursive(BaseChain chain, ref int ready, ref int dispatched, ref int skipped, ref int completed)
         {
             switch (chain.DebugState)
             {
                 case "Ready":     ready++;     break;
-                case "Started":   started++;   break;
+                case "Started":   dispatched++;   break;
                 case "Skipped":   skipped++;   break;
                 case "Completed": completed++; break;
             }
             foreach (var child in chain.DebugChildren)
             {
-                CountChainsRecursive(child, ref ready, ref started, ref skipped, ref completed);
+                CountChainsRecursive(child, ref ready, ref dispatched, ref skipped, ref completed);
             }
         }
 
@@ -158,7 +158,7 @@ namespace ChainPattern.Editor
             Color stateColor = state switch
             {
                 "Ready"     => ColorReady,
-                "Started"   => ColorStarted,
+                "Dispatched"=> ColorDispatched,
                 "Skipped"   => ColorSkipped,
                 "Completed" => ColorCompleted,
                 _           => Color.white,

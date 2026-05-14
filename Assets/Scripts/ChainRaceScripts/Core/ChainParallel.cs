@@ -40,6 +40,19 @@ namespace ChainPattern {
 #endif
         }
 
+        protected override void OnDispose() {
+            foreach (BaseChain chain in dispatchedChainList) {
+                chain.Dispose();
+            }
+            dispatchedChainList.Clear();
+            dispatchedChainList = null;
+            while (chainQueue.Count > 0) {
+                BaseChain c = chainQueue.Dequeue();
+                c.Dispose();
+            }
+            chainQueue = null;
+        }
+
         /// <summary>
         /// Adds a chain to the parallel execution.
         /// If already Started, the chain begins immediately.

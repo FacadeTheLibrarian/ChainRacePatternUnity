@@ -18,6 +18,9 @@ namespace ChainPattern {
         public ChainWork(IChainWorkLifeCycle lifeCycle = null) {
             this.lifeCycle = lifeCycle;
         }
+        protected override void OnDispose() {
+            tokenSource?.Cancel();
+        }
 
         /// <summary>
         /// Ends the work
@@ -74,7 +77,7 @@ namespace ChainPattern {
                 // Executed when canceled                
             }
             finally {
-                // Dispose of resources after completion or cancellation
+                // OnDispose of resources after completion or cancellation
                 tokenSource?.Dispose();
                 tokenSource = null;
             }

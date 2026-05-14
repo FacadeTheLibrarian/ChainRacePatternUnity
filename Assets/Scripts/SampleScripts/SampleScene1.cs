@@ -123,7 +123,6 @@ namespace Sample
             await chainSequence.Start();
         }
 
-
         /// <summary>        
         /// Sequence 3: Section 2 cannot be skipped (important scene)
         /// Section 1: Skippable
