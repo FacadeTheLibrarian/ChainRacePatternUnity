@@ -20,7 +20,7 @@ namespace ChainPattern.Tests
         public void SingleNop_CompletesImmediately() {
             bool completed = false;
             bool skipped = false;
-            var chain = new ChainRace(new ChainImmidiateComplete());
+            var chain = new ChainRace(new ChainImmediateComplete());
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
             chain.StartWithCallback(context);
             Assert.IsTrue(completed);
@@ -34,7 +34,7 @@ namespace ChainPattern.Tests
             bool workSkipCalled = false;
             var work = new ChainWork(new ChainWorkLifeCycleMock(onSkip: () => workSkipCalled = true));
 
-            var chain = new ChainRace(new ChainImmidiateComplete(), work);
+            var chain = new ChainRace(new ChainImmediateComplete(), work);
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
             chain.StartWithCallback(context);
 
@@ -99,7 +99,7 @@ namespace ChainPattern.Tests
         [Test]
         public void Add_ReturnsChainRaceForFluent() {
             var chain = new ChainRace();
-            var result = chain.Add(new ChainImmidiateComplete());
+            var result = chain.Add(new ChainImmediateComplete());
             Assert.AreSame(chain, result);
         }
 

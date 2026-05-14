@@ -21,7 +21,7 @@ namespace ChainPattern.Tests
         public void SingleNop_CompletesImmediately() {
             bool completed = false;
             bool skipped = false;
-            var chain = new ChainSequence(new ChainImmidiateComplete());
+            var chain = new ChainSequence(new ChainImmediateComplete());
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
             chain.StartWithCallback(context);
             Assert.IsTrue(completed);
@@ -32,7 +32,7 @@ namespace ChainPattern.Tests
         public void MultipleNops_CompletesImmediately() {
             bool completed = false;
             bool skipped = false;
-            var chain = new ChainSequence(new ChainImmidiateComplete(), new ChainImmidiateComplete(), new ChainImmidiateComplete());
+            var chain = new ChainSequence(new ChainImmediateComplete(), new ChainImmediateComplete(), new ChainImmediateComplete());
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
             chain.StartWithCallback(context);
             Assert.IsTrue(completed);
@@ -77,7 +77,7 @@ namespace ChainPattern.Tests
         [Test]
         public void Add_ReturnsChainSequenceForFluent() {
             var chain = new ChainSequence();
-            var result = chain.Add(new ChainImmidiateComplete());
+            var result = chain.Add(new ChainImmediateComplete());
             Assert.AreSame(chain, result);
         }
 

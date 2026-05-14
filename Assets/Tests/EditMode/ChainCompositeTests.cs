@@ -54,7 +54,7 @@ namespace ChainPattern.Tests {
             bool work4Started = false;
             var work1 = new ChainAction(() => { work1End = true; });
             var work2 = new ChainWork(new ChainWorkLifeCycleMock(onStart: () => work2Started = true, onSkip: () => work2SkipCalled = true));
-            var work3 = new ChainImmidiateComplete();
+            var work3 = new ChainImmediateComplete();
             var work4 = new ChainWork(new ChainWorkLifeCycleMock(onStart: () => work4Started = true, onSkip: () => work4SkipCalled = true));
             var chain = new ChainRace(
                 new ChainParallel(
@@ -194,7 +194,7 @@ namespace ChainPattern.Tests {
             bool dStarted = false, dSkipped = false;
             bool eStarted = false;
 
-            var a = new ChainImmidiateComplete(); // Synchronous to proceed to next instantly
+            var a = new ChainImmediateComplete(); // Synchronous to proceed to next instantly
             var b = new ChainWork(new ChainWorkLifeCycleMock(onStart: () => bStarted = true, onSkip: () => bSkipped = true));
             var c = new ChainWork(new ChainWorkLifeCycleMock(onStart: () => cStarted = true, onSkip: () => cSkipped = true));
             var d = new ChainWork(new ChainWorkLifeCycleMock(onStart: () => dStarted = true, onSkip: () => dSkipped = true));

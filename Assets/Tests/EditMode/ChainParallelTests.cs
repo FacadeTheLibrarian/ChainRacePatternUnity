@@ -20,7 +20,7 @@ namespace ChainPattern.Tests
         public void AllNops_CompletesImmediately() {
             bool completed = false;
             bool skipped = false;
-            var chain = new ChainParallel(new ChainImmidiateComplete(), new ChainImmidiateComplete(), new ChainImmidiateComplete());
+            var chain = new ChainParallel(new ChainImmediateComplete(), new ChainImmediateComplete(), new ChainImmediateComplete());
             var context = new ChainContext(_ => completed = true, _ => skipped = true);
             chain.StartWithCallback(context);
             Assert.IsTrue(completed);
@@ -32,7 +32,7 @@ namespace ChainPattern.Tests
             bool completed = false;
             bool skipped = false;
             var work = new ChainWork(new ChainWorkLifeCycleMock());
-            var chain = new ChainParallel(new ChainImmidiateComplete(), work);
+            var chain = new ChainParallel(new ChainImmediateComplete(), work);
             var context = new ChainContext(_ => completed = true, _ => skipped = true);
             chain.StartWithCallback(context);
             Assert.IsFalse(completed);
@@ -60,7 +60,7 @@ namespace ChainPattern.Tests
         [Test]
         public void Add_ReturnsChainParallelForFluent() {
             var chain = new ChainParallel();
-            var result = chain.Add(new ChainImmidiateComplete());
+            var result = chain.Add(new ChainImmediateComplete());
             Assert.AreSame(chain, result);
         }
 

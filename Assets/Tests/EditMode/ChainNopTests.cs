@@ -9,7 +9,7 @@ namespace ChainPattern.Tests
         public void Start_CompletesImmediately() {
             bool completed = false;
             bool skipped = false;
-            var chain = new ChainImmidiateComplete();
+            var chain = new ChainImmediateComplete();
             var context = new ChainContext(_ => completed = true, _ => skipped = true);
             chain.StartWithCallback(context);
             Assert.IsTrue(completed);
@@ -18,13 +18,13 @@ namespace ChainPattern.Tests
 
         [Test]
         public void Skip_BeforeStart_DoesNotThrow() {
-            var chain = new ChainImmidiateComplete();
+            var chain = new ChainImmediateComplete();
             Assert.DoesNotThrow(() => chain.Skip());
         }
 
         [Test]
         public void Start_CalledTwice_DoesNotThrow() {
-            var chain = new ChainImmidiateComplete();
+            var chain = new ChainImmediateComplete();
             chain.Start();
             Assert.DoesNotThrow(() => chain.Start());
         }
@@ -32,7 +32,7 @@ namespace ChainPattern.Tests
         [Test]
         public void CompleteCallback_CalledExactlyOnce() {
             int callCount = 0;
-            var chain = new ChainImmidiateComplete();
+            var chain = new ChainImmediateComplete();
             var context = new ChainContext(_ => callCount++, _ => { });
             chain.StartWithCallback(context);
             Assert.AreEqual(1, callCount);
