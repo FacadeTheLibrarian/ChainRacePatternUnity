@@ -38,6 +38,7 @@ namespace ChainPattern {
         /// </summary>
         public void Dispose() {
             onChainComplete = null;
+            onChainSkip = null;
         }
 
         /// <summary>
