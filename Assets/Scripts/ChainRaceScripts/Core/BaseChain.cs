@@ -20,7 +20,7 @@ namespace ChainPattern {
         /// </summary>
         public enum ChainState {
             Ready = 1,
-            Started = 2,
+            Dispatched = 2,
             Skipped = 4,
             Completed = 8,
         }
@@ -67,7 +67,7 @@ namespace ChainPattern {
             }
             this.upstreamContext = upstreamContext;
             currentUtcs = new UniTaskCompletionSource<bool>();
-            chainState = ChainState.Started;
+            chainState = ChainState.Dispatched;
 #if UNITY_EDITOR
             startedTime = Time.realtimeSinceStartup;
 #endif
@@ -81,7 +81,7 @@ namespace ChainPattern {
         public void Skip() {
             // chainState should be Started or Ready to allow skip
             // Calling Skip directly instead of Start setting callbacks and fastforward
-            if ((chainState & (ChainState.Started | ChainState.Ready)) == 0) {
+            if ((chainState & (ChainState.Dispatched | ChainState.Ready)) == 0) {
                 return;
             }
 
@@ -99,7 +99,7 @@ namespace ChainPattern {
         /// Marks the Chain as completed. Must be called by derived classes when their work is done.
         /// </summary>
         protected void Complete() {
-            if (chainState != ChainState.Started) {
+            if (chainState != ChainState.Dispatched) {
                 return;
             }
             chainState = ChainState.Completed;
