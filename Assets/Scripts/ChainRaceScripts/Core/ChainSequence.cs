@@ -33,7 +33,7 @@ namespace ChainPattern {
 
         /// <summary>
         /// Adds a chain to the sequence.
-        /// Chains added after the sequence has finished are ignored.
+        /// Chains added after the sequence has dispatched are ignored.
         /// </summary>
         public ChainSequence Add(BaseChain chain) {
             if (chainState == ChainState.Ready) {
