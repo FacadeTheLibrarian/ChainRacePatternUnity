@@ -12,7 +12,7 @@ namespace ChainPattern.Tests
             bool skipped = false;
             var chain = new ChainSequence();
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.IsTrue(completed);
             Assert.IsFalse(skipped);
         }
@@ -23,7 +23,7 @@ namespace ChainPattern.Tests
             bool skipped = false;
             var chain = new ChainSequence(new ChainImmidiateComplete());
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.IsTrue(completed);
             Assert.IsFalse(skipped);
         }
@@ -34,7 +34,7 @@ namespace ChainPattern.Tests
             bool skipped = false;
             var chain = new ChainSequence(new ChainImmidiateComplete(), new ChainImmidiateComplete(), new ChainImmidiateComplete());
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.IsTrue(completed);
             Assert.IsFalse(skipped);
         }
@@ -48,7 +48,7 @@ namespace ChainPattern.Tests
                 new ChainAction(() => order.Add(3))
             );
             ChainContext context = new ChainContext();
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.AreEqual(new[] { 1, 2, 3 }, order.ToArray());
         }
 
@@ -59,7 +59,7 @@ namespace ChainPattern.Tests
             chain.Add(new ChainAction(() => order.Add(1)));
             chain.Add(new ChainAction(() => order.Add(2)));
             ChainContext context = new ChainContext();
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.AreEqual(new[] { 1, 2 }, order.ToArray());
         }
 
@@ -70,7 +70,7 @@ namespace ChainPattern.Tests
             chain.Add(new ChainAction(() => order.Add(2)));
             chain.Add(new ChainAction(() => order.Add(3)));
             ChainContext context = new ChainContext();
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.AreEqual(new[] { 1, 2, 3 }, order.ToArray());
         }
 
@@ -88,7 +88,7 @@ namespace ChainPattern.Tests
             var work = new ChainWork(new ChainWorkLifeCycleMock(onStart: () => { firstStarted = true; }));
             var chain = new ChainSequence(work, new ChainAction(() => secondStarted = true));
             ChainContext context = new ChainContext();
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.IsTrue(firstStarted);
             Assert.IsFalse(secondStarted);
             work.End();
@@ -101,7 +101,7 @@ namespace ChainPattern.Tests
             bool skipped = false;
             var chain = new ChainSequence(new ChainFreeze());
             ChainContext context = new ChainContext(_ => completed = true, _ => skipped = true);
-            chain.Start(context);
+            chain.StartWithCallback(context);
             chain.Skip();
             Assert.IsFalse(completed);
             Assert.IsTrue(skipped);

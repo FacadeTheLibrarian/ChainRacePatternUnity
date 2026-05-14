@@ -9,7 +9,7 @@ namespace ChainPattern.Tests
         public void Start_InvokesAction() {
             bool called = false;
             var chain = new ChainAction(() => called = true);
-            chain.StartWithoutCallback();
+            chain.Start();
             Assert.IsTrue(called);
         }
 
@@ -19,7 +19,7 @@ namespace ChainPattern.Tests
             bool skipped = false;
             var chain = new ChainAction(() => { });
             var context = new ChainContext(_ => completed = true, _ => skipped = true);
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.IsTrue(completed);
             Assert.IsFalse(skipped);
         }
@@ -30,7 +30,7 @@ namespace ChainPattern.Tests
             bool skipped = false;
             var chain = new ChainAction();
             var context = new ChainContext(_ => completed = true, _ => skipped = true);
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.IsTrue(completed);
             Assert.IsFalse(skipped);
         }
@@ -60,7 +60,7 @@ namespace ChainPattern.Tests
             bool secondCalled = false;
             var chain = new ChainAction(() => firstCalled = true);
             chain.SetAction(() => secondCalled = true);
-            chain.StartWithoutCallback();
+            chain.Start();
             Assert.IsFalse(firstCalled);
             Assert.IsTrue(secondCalled);
         }

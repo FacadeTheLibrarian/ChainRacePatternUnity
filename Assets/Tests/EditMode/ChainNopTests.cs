@@ -11,7 +11,7 @@ namespace ChainPattern.Tests
             bool skipped = false;
             var chain = new ChainImmidiateComplete();
             var context = new ChainContext(_ => completed = true, _ => skipped = true);
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.IsTrue(completed);
             Assert.IsFalse(skipped);
         }
@@ -25,8 +25,8 @@ namespace ChainPattern.Tests
         [Test]
         public void Start_CalledTwice_DoesNotThrow() {
             var chain = new ChainImmidiateComplete();
-            chain.StartWithoutCallback();
-            Assert.DoesNotThrow(() => chain.StartWithoutCallback());
+            chain.Start();
+            Assert.DoesNotThrow(() => chain.Start());
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace ChainPattern.Tests
             int callCount = 0;
             var chain = new ChainImmidiateComplete();
             var context = new ChainContext(_ => callCount++, _ => { });
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.AreEqual(1, callCount);
         }
     }

@@ -31,7 +31,7 @@ namespace ChainPattern.Tests {
                 )
             );
             ChainContext context = new ChainContext();
-            chain.Start(context);
+            chain.StartWithCallback(context);
 
             work1.End();
             Assert.IsTrue(work1Started);
@@ -67,7 +67,7 @@ namespace ChainPattern.Tests {
                 )
             );
             ChainContext context = new ChainContext();
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.IsTrue(work1End);
             Assert.IsTrue(work2Started);
             Assert.IsFalse(work2SkipCalled);
@@ -99,7 +99,7 @@ namespace ChainPattern.Tests {
 
             var chain = new ChainRace(sequence, raceOpponent);
             ChainContext context = new ChainContext();
-            chain.Start(context);
+            chain.StartWithCallback(context);
 
             Assert.IsTrue(seq1Started);
             Assert.IsFalse(seq2Started);
@@ -135,7 +135,7 @@ namespace ChainPattern.Tests {
             var sequence = new ChainSequence(race, seqNextWork);
             ChainContext context = new ChainContext();
 
-            sequence.Start(context);
+            sequence.StartWithCallback(context);
 
             Assert.IsTrue(raceAStarted);
             Assert.IsTrue(raceBStarted);
@@ -166,7 +166,7 @@ namespace ChainPattern.Tests {
             var parallel = new ChainParallel(sequence1, sequence2);
             ChainContext context = new ChainContext((_) => parallelCompleted = true, null);
 
-            parallel.Start(context);
+            parallel.StartWithCallback(context);
 
             Assert.IsFalse(seq1BStarted);
             Assert.IsFalse(seq2BStarted);
@@ -206,7 +206,7 @@ namespace ChainPattern.Tests {
             var rootSequence = new ChainSequence(a, parallel);
 
             ChainContext context = new ChainContext();
-            rootSequence.Start(context);
+            rootSequence.StartWithCallback(context);
 
             // B, C, D are running in parallel/race
             Assert.IsTrue(bStarted);
@@ -234,7 +234,7 @@ namespace ChainPattern.Tests {
             );
 
             ChainContext context = new ChainContext((_) => completed = true, null);
-            chain.Start(context);
+            chain.StartWithCallback(context);
 
             Assert.IsTrue(completed);
         }

@@ -11,7 +11,7 @@ namespace ChainPattern.Tests
             bool skipped = false;
             var chain = new ChainRace();
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.IsTrue(completed);
             Assert.IsFalse(skipped);
         }
@@ -22,7 +22,7 @@ namespace ChainPattern.Tests
             bool skipped = false;
             var chain = new ChainRace(new ChainImmidiateComplete());
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.IsTrue(completed);
             Assert.IsFalse(skipped);
         }
@@ -36,7 +36,7 @@ namespace ChainPattern.Tests
 
             var chain = new ChainRace(new ChainImmidiateComplete(), work);
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
-            chain.Start(context);
+            chain.StartWithCallback(context);
 
             Assert.IsTrue(completed);
             Assert.IsFalse(skipped);
@@ -51,7 +51,7 @@ namespace ChainPattern.Tests
             var work2 = new ChainWork();
             var chain = new ChainRace(work1, work2);
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.IsFalse(completed);
             Assert.IsFalse(skipped);
             work1.End();
@@ -70,7 +70,7 @@ namespace ChainPattern.Tests
 
             var chain = new ChainRace(work1, work2, work3);
             ChainContext context = new ChainContext();
-            chain.Start(context);
+            chain.StartWithCallback(context);
             work1.End();
 
             Assert.IsFalse(work1SkipCalled);
@@ -88,7 +88,7 @@ namespace ChainPattern.Tests
 
             var chain = new ChainRace(work1, work2, work3);
             ChainContext context = new ChainContext();
-            chain.Start(context);
+            chain.StartWithCallback(context);
             work2.End();
 
             Assert.IsTrue(work1SkipCalled);
@@ -112,7 +112,7 @@ namespace ChainPattern.Tests
 
             var chain = new ChainRace(work1, work2);
             ChainContext context = new ChainContext();
-            chain.Start(context);
+            chain.StartWithCallback(context);
             chain.Skip();
 
             Assert.IsTrue(work1SkipCalled);
@@ -125,7 +125,7 @@ namespace ChainPattern.Tests
             bool skipped = false;
             var chain = new ChainRace(new ChainWork(), new ChainWork());
             ChainContext context = new ChainContext(_ => { completed = true; }, _ => { skipped = true; });
-            chain.Start(context);
+            chain.StartWithCallback(context);
             chain.Skip();
             Assert.IsFalse(completed);
             Assert.IsTrue(skipped);

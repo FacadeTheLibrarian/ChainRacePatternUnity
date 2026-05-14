@@ -24,7 +24,7 @@ namespace ChainPattern.Tests
             bool completed = false;
             var chain = new ChainDelay(1.0f);
             var context = new ChainContext(_ => completed = true, _ => { });
-            chain.Start(context);
+            chain.StartWithCallback(context);
             float elapsedTime = 0.0f;
             Assert.IsFalse(completed);
             while (true) {
@@ -46,7 +46,7 @@ namespace ChainPattern.Tests
             bool skipped = false;
             var chain = new ChainDelay(10f);
             var context = new ChainContext(_ => completed = true, _ => skipped = true);
-            chain.Start(context);
+            chain.StartWithCallback(context);
             chain.Skip();
             Assert.IsFalse(completed);
             Assert.IsTrue(skipped);

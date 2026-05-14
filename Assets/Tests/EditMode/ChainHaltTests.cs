@@ -11,7 +11,7 @@ namespace ChainPattern.Tests
             bool skipped = false;
             var chain = new ChainFreeze();
             var context = new ChainContext(_ => completed = true, _ => skipped = true);
-            chain.Start(context);
+            chain.StartWithCallback(context);
             Assert.IsFalse(completed);
             Assert.IsFalse(skipped);
         }
@@ -28,7 +28,7 @@ namespace ChainPattern.Tests
             bool skipped = false;
             var chain = new ChainFreeze();
             var context = new ChainContext(_ => completed = true, _ => skipped = true);
-            chain.Start(context);
+            chain.StartWithCallback(context);
             chain.Skip();
             Assert.IsFalse(completed);
             Assert.IsTrue(skipped);
@@ -37,7 +37,7 @@ namespace ChainPattern.Tests
         [Test]
         public void Skip_AfterStart_DoesNotThrow() {
             var chain = new ChainFreeze();
-            chain.StartWithoutCallback();
+            chain.Start();
             Assert.DoesNotThrow(() => chain.Skip());
         }
     }
