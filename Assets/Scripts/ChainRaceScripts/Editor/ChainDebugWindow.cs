@@ -171,7 +171,7 @@ namespace ChainPattern.Editor
 
             float elapsed = chain.DebugElapsedSeconds;
             string elapsedStr = elapsed >= 0f ? $"  {elapsed:F1}s" : "";
-            string skippedStr = chain.HasSkipped ? "  <color=#FF88FF>[FF]</color>" : "";
+            string skippedStr = chain.HasSkipped ? "  <color=#FF88FF>[SKIP]</color>" : "";
             string hex = ColorHex(stateColor);
 
             EditorGUI.indentLevel = depth;
