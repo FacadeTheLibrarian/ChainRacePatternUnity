@@ -19,25 +19,16 @@ namespace ChainPattern.Tests
         //    Assert.IsFalse(skipped);
         //}
 
-        [UnityTest]
-        public IEnumerator Start_DoesNotCompleteImmediately() {
+        [Test]
+        public void Start_DoesNotCompleteImmediately() {
             bool completed = false;
+            bool skipped = false;
             var chain = new ChainDelay(1.0f);
-            var context = new OneShotChainContext(_ => completed = true, _ => { });
+            var context = new OneShotChainContext(_ => completed = true, _ => skipped = true);
             chain.StartWithCallback(context);
-            float elapsedTime = 0.0f;
             Assert.IsFalse(completed);
-            while (true) {
-                elapsedTime += Time.deltaTime;
-                if (completed) {
-                    break;
-                }
-                if(elapsedTime >= 20.0f) {
-                    break;
-                }
-                yield return null;
-            }
-            Assert.IsTrue(completed);
+            chain.Skip();
+            Assert.IsTrue(skipped);
         }
 
         [Test]
