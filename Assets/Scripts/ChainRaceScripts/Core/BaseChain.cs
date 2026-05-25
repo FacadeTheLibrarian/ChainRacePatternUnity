@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 Kenichi Morishita
 
-using Cysharp.Threading.Tasks;
 using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 #if UNITY_EDITOR
 using UnityEngine;
 #endif
@@ -57,10 +58,23 @@ namespace ChainPattern {
 
         /// <summary>
         /// Starts Chain without any callbacks.
+        /// when CancellationToken is triggered, the Chain will be domino-ly disposed, neither completing nor skipping, just cancelling and cleaning up.
         /// </summary>
+        /// <param name="token">CancellationToken linked to the game, or at least a scene that includes this Chain</param>
         /// <returns>Task completes when done</returns>
-        public UniTask Start() {
-            return StartWithCallback(null);
+        public UniTask Start(CancellationToken token) {
+            // If chain has already started, return the existing task to wait for it
+            if (chainState != ChainState.Ready) {
+                return currentUtcs?.Task ?? UniTask.CompletedTask;
+            }
+            currentUtcs = new UniTaskCompletionSource<bool>();
+            chainState = ChainState.Dispatched;
+#if UNITY_EDITOR
+            startedTime = Time.realtimeSinceStartup;
+#endif
+            StartInternal();
+            token.Register(Dispose);
+            return currentUtcs.Task;
         }
 
         /// <summary>

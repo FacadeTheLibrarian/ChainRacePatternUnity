@@ -73,7 +73,7 @@ namespace Sample
             // Register the Chain with the debug window to visualize its state and tree structure at runtime
             ChainPattern.Editor.ChainDebugWindow.Watch(chainSequence);
 #endif
-            await chainSequence.Start();
+            await chainSequence.Start(this.destroyCancellationToken);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace Sample
             // Register the Chain with the debug window to visualize its state and tree structure at runtime
             ChainPattern.Editor.ChainDebugWindow.Watch(chainSequence);
 #endif
-            await chainSequence.Start();
+            await chainSequence.Start(this.destroyCancellationToken);
         }
 
         /// <summary>        
@@ -165,7 +165,7 @@ namespace Sample
             // Register the Chain with the debug window to visualize its state and tree structure at runtime
             ChainPattern.Editor.ChainDebugWindow.Watch(chainSequence);
 #endif
-            await chainSequence.Start();
+            await chainSequence.Start(this.destroyCancellationToken);
         }
 
         /// <summary>

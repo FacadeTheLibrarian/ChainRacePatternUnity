@@ -25,8 +25,8 @@ namespace ChainPattern.Tests
         [Test]
         public void Start_CalledTwice_DoesNotThrow() {
             var chain = new ChainImmediateComplete();
-            chain.Start();
-            Assert.DoesNotThrow(() => chain.Start());
+            chain.Start(System.Threading.CancellationToken.None);
+            Assert.DoesNotThrow(() => chain.Start(System.Threading.CancellationToken.None));
         }
 
         [Test]

@@ -45,7 +45,7 @@ namespace Sample
                 ChainPattern.Editor.ChainDebugWindow.Watch(chainHandle);
 #endif  
                 try {
-                    await chainHandle.Start();
+                    await chainHandle.Start(this.destroyCancellationToken);
                 }
                 catch (Exception exception){
 #if UNITY_EDITOR

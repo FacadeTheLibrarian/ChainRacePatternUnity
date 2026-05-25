@@ -3,8 +3,46 @@ using NUnit.Framework;
 using UnityEngine.TestTools;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 namespace ChainPattern.Tests {
     public class ChainAsynchronousTests {
+
+        [UnityTest]
+        public IEnumerator CancellationToken_Should_Throw_Exception() {
+            yield return CancellationTokenTest().ToCoroutine();
+        }
+
+        private async UniTask CancellationTokenTest() {
+            var cts = new CancellationTokenSource();
+            var token = cts.Token;
+
+            bool isStarted = false;
+            bool isSkipped = false;
+            bool isCompleted = false;
+
+            var freezeChain1 = new ChainFreeze();
+            var workChain1 = new ChainWork(new ChainWorkLifeCycleMock(
+                onStart: () => isStarted = true,
+                onSkip: () => isSkipped = true
+                ));
+            var actionChain1 = new ChainAction(() => isCompleted = true);
+            var sequence = new ChainSequence(freezeChain1, workChain1, actionChain1);
+
+            UniTask chainTask = sequence.Start(token);
+            UniTask cancel = UniTask.Create(() => { cts.Cancel(); return UniTask.CompletedTask; });
+
+            try {
+                await UniTask.WhenAll(chainTask, cancel);
+            }
+            catch {
+                UnityEngine.Debug.Log("Exception thrown as expected when cancellation is requested.");
+            }
+            Assert.IsTrue(token.IsCancellationRequested);
+            Assert.IsFalse(isStarted);
+            Assert.IsFalse(isSkipped);
+            Assert.IsFalse(isCompleted);
+        }
+
         // Written by Gemini
         [UnityTest]
         public IEnumerator AsyncAdd_To_RunningSequence_ExecutesProperly() => UniTask.ToCoroutine(async () => {
@@ -131,7 +169,7 @@ namespace ChainPattern.Tests {
             var context = new OneShotChainContext();
             var sequenceTask = sequence.StartWithCallback(context);
 
-            await UniTask.Yield(); 
+            await UniTask.Yield();
             // At this point, initialParWork and raceOpponent are both running
 
             // 1. 実行中の深い層にある Parallel に対して動的に Add() を行う
@@ -156,7 +194,7 @@ namespace ChainPattern.Tests {
             addedParWork.End();
             addedParWorkEnded = true;
 
-            await UniTask.Yield(); 
+            await UniTask.Yield();
 
             // Parallelが勝ったので、Raceの相手側(raceOpponent)はSkipされているはず
             Assert.IsTrue(raceOpponentSkipped);
