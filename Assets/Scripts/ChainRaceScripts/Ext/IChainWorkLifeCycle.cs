@@ -15,7 +15,8 @@ public interface IChainWorkLifeCycle {
     /// Called when ChainWork Updates
     /// If no IChainWorkLifeCycle is provided to ChainWork,
     /// Update will not be called and just waits for End() to be called to complete the chain
+    /// retruns TRUE when update ends, otherwise FALSE to continue updating
     /// </summary>
-    /// <returns>should continue updating</returns>
+    /// <returns>should END updating?</returns>
     public bool Update();
 }
